@@ -1,4 +1,4 @@
-name: flutter_counter_bloc
+name: tasbeh
 description: "A new Flutter project."
 publish_to: 'none'
 
@@ -11,17 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
-  bloc: ^9.2.0
   flutter_bloc: ^9.1.1
+  hydrated_bloc: ^10.1.1
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  bloc_lint: ^0.3.6
-  flutter_lints: ^6.0.0
-  mocktail: ^1.0.4
 
 flutter:
   uses-material-design: true
