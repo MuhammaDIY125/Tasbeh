@@ -25,7 +25,15 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CounterCubit(),
-      child: MaterialApp(title: 'Tasbeh', home: const CounterPage()),
+      child: MaterialApp(
+        title: 'Tasbeh',
+        // For Android 15+
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.black,
+        ),
+        home: const CounterPage(),
+      ),
     );
   }
 }

@@ -11,9 +11,7 @@ class CounterPage extends StatelessWidget {
     final cubit = context.read<CounterCubit>();
 
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
-        bottom: false,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: cubit.increment,
@@ -22,13 +20,9 @@ class CounterPage extends StatelessWidget {
               Positioned(
                 right: 8,
                 top: 8,
-                child: IconButton(
-                  onPressed: cubit.reset,
-                  icon: const Icon(
-                    Icons.restart_alt_rounded,
-                    size: 28,
-                    color: Colors.white,
-                  ),
+                child: GestureDetector(
+                  onTap: cubit.reset,
+                  child: Image.asset('assets/icons/refresh.png'),
                 ),
               ),
               Center(
@@ -36,6 +30,7 @@ class CounterPage extends StatelessWidget {
                   builder: (context, counter) {
                     return Text(
                       '$counter',
+                      textAlign: .center,
                       style: const TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
