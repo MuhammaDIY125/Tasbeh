@@ -11,7 +11,7 @@ class CounterCubit extends HydratedCubit<int> {
 
   void reset() {
     HapticFeedback.heavyImpact();
-    emit(1_000_000_000_000_000_000);
+    emit(0);
   }
 
   @override

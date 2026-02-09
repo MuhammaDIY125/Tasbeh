@@ -20,9 +20,13 @@ class CounterPage extends StatelessWidget {
               Positioned(
                 right: 8,
                 top: 8,
-                child: GestureDetector(
-                  onTap: cubit.reset,
-                  child: Image.asset('assets/icons/refresh.png'),
+                child: IconButton(
+                  onPressed: cubit.reset,
+                  icon: const Icon(
+                    Icons.refresh,
+                    size: 28,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               Center(

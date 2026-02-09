@@ -28,5 +28,4 @@ flutter_launcher_icons:
   image_path: "assets/icon.png"
 
 flutter:
-  assets:
-    - assets/icons/
+  uses-material-design: true
