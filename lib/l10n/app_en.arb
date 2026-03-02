@@ -11,5 +11,10 @@
   "resetConfirmationTitle": "Reset counter?",
   "resetConfirmationMessage": "Are you sure you want to reset the counter to zero?",
   "cancel": "Cancel",
-  "reset": "Reset"
+  "reset": "Reset",
+  "dailyReminder": "Daily reminder",
+  "dailyReminderSubtitle": "Tasbeh reminder",
+  "reminderTimePickerTitle": "Reminder time",
+  "notificationTitle": "Tasbeh time 📿",
+  "notificationBody": "Don't forget to do your daily tasbeh!"
 }

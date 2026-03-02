@@ -43,4 +43,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get reset => 'Сброс';
+
+  @override
+  String get dailyReminder => 'Ежедневное напоминание';
+
+  @override
+  String get dailyReminderSubtitle => 'Напоминание о таcбехах';
+
+  @override
+  String get reminderTimePickerTitle => 'Время напоминания';
+
+  @override
+  String get notificationTitle => 'Время таcбеха 📿';
+
+  @override
+  String get notificationBody => 'Не забудьте совершить ежедневный тасбех!';
 }

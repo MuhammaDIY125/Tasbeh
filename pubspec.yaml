@@ -18,6 +18,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   hydrated_bloc: ^10.1.1
   path_provider: ^2.1.5
+  flutter_local_notifications: ^20.1.0
 
 dev_dependencies:
   flutter_test:

@@ -168,6 +168,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset'**
   String get reset;
+
+  /// No description provided for @dailyReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily reminder'**
+  String get dailyReminder;
+
+  /// No description provided for @dailyReminderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbeh reminder'**
+  String get dailyReminderSubtitle;
+
+  /// No description provided for @reminderTimePickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get reminderTimePickerTitle;
+
+  /// No description provided for @notificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tasbeh time 📿'**
+  String get notificationTitle;
+
+  /// No description provided for @notificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t forget to do your daily tasbeh!'**
+  String get notificationBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

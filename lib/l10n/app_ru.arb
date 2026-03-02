@@ -11,5 +11,10 @@
   "resetConfirmationTitle": "Сбросить счётчик?",
   "resetConfirmationMessage": "Вы уверены, что хотите обнулить счётчик?",
   "cancel": "Отмена",
-  "reset": "Сброс"
+  "reset": "Сброс",
+  "dailyReminder": "Ежедневное напоминание",
+  "dailyReminderSubtitle": "Напоминание о таcбехах",
+  "reminderTimePickerTitle": "Время напоминания",
+  "notificationTitle": "Время таcбеха 📿",
+  "notificationBody": "Не забудьте совершить ежедневный тасбех!"
 }

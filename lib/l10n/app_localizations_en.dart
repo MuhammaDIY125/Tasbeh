@@ -43,4 +43,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset => 'Reset';
+
+  @override
+  String get dailyReminder => 'Daily reminder';
+
+  @override
+  String get dailyReminderSubtitle => 'Tasbeh reminder';
+
+  @override
+  String get reminderTimePickerTitle => 'Reminder time';
+
+  @override
+  String get notificationTitle => 'Tasbeh time 📿';
+
+  @override
+  String get notificationBody => 'Don\'t forget to do your daily tasbeh!';
 }

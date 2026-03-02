@@ -11,5 +11,10 @@
   "resetConfirmationTitle": "Hisoblagichni tiklash?",
   "resetConfirmationMessage": "Hisoblagichni nolga tushirishga aminmisiz?",
   "cancel": "Bekor qilish",
-  "reset": "Tiklash"
+  "reset": "Tiklash",
+  "dailyReminder": "Kunlik eslatma",
+  "dailyReminderSubtitle": "Tasbeeh eslatmasi",
+  "reminderTimePickerTitle": "Eslatma vaqti",
+  "notificationTitle": "Tasbeeh vaqti 📿",
+  "notificationBody": "Kunlik tasbehni unutmang!"
 }

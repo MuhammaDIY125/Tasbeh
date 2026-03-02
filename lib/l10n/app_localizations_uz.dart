@@ -43,4 +43,19 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get reset => 'Tiklash';
+
+  @override
+  String get dailyReminder => 'Kunlik eslatma';
+
+  @override
+  String get dailyReminderSubtitle => 'Tasbeeh eslatmasi';
+
+  @override
+  String get reminderTimePickerTitle => 'Eslatma vaqti';
+
+  @override
+  String get notificationTitle => 'Tasbeeh vaqti 📿';
+
+  @override
+  String get notificationBody => 'Kunlik tasbehni unutmang!';
 }

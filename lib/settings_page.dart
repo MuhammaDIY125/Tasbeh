@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
+import 'notification_cubit.dart';
+import 'notification_service.dart';
 import 'vibration_cubit.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -30,6 +32,50 @@ class SettingsPage extends StatelessWidget {
                 value: vibration,
                 activeThumbColor: colorScheme.primary,
                 onChanged: (_) => context.read<VibrationCubit>().toggle(),
+              );
+            },
+          ),
+          BlocBuilder<NotificationCubit, TimeOfDay?>(
+            builder: (context, time) {
+              return SwitchListTile(
+                title: Text(t.dailyReminder),
+                subtitle: Text(
+                  time != null ? time.format(context) : t.dailyReminderSubtitle,
+                  style: time != null
+                      ? TextStyle(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        )
+                      : null,
+                ),
+                value: time != null,
+                activeThumbColor: colorScheme.primary,
+                onChanged: (value) async {
+                  if (!value) {
+                    context.read<NotificationCubit>().disable();
+                    await NotificationService.instance.cancelDailyReminder();
+                  } else {
+                    final granted = await NotificationService.instance
+                        .requestPermission();
+                    if (!granted && context.mounted) return;
+
+                    if (!context.mounted) return;
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: const TimeOfDay(hour: 20, minute: 0),
+                      helpText: t.reminderTimePickerTitle,
+                    );
+
+                    if (selectedTime != null && context.mounted) {
+                      context.read<NotificationCubit>().setTime(selectedTime);
+                      await NotificationService.instance.scheduleDailyReminder(
+                        time: selectedTime,
+                        title: t.notificationTitle,
+                        body: t.notificationBody,
+                      );
+                    }
+                  }
+                },
               );
             },
           ),
