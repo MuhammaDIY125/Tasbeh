@@ -1,0 +1,15 @@
+{
+  "@@locale": "uz",
+  "appTitle": "Tasbeh",
+  "settingsTitle": "Sozlamalar",
+  "darkTheme": "Qorong‘i mavzu",
+  "sound": "Ovoz",
+  "vibration": "Vibratsiya",
+  "resetSettings": "Sozlamalarni tiklash",
+  "counter": "Hisoblagich",
+  "language": "Til",
+  "resetConfirmationTitle": "Hisoblagichni tiklash?",
+  "resetConfirmationMessage": "Hisoblagichni nolga tushirishga aminmisiz?",
+  "cancel": "Bekor qilish",
+  "reset": "Tiklash"
+}

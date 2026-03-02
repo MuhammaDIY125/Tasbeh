@@ -11,6 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
   flutter_bloc: ^9.1.1
   hydrated_bloc: ^10.1.1
   path_provider: ^2.1.5
@@ -29,3 +33,4 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  generate: true

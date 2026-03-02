@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+  "appTitle": "Tasbeh",
+  "settingsTitle": "Settings",
+  "darkTheme": "Dark theme",
+  "sound": "Sound",
+  "vibration": "Vibration",
+  "resetSettings": "Reset settings",
+  "counter": "Counter",
+  "language": "Language",
+  "resetConfirmationTitle": "Reset counter?",
+  "resetConfirmationMessage": "Are you sure you want to reset the counter to zero?",
+  "cancel": "Cancel",
+  "reset": "Reset"
+}

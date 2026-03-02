@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 
 import 'counter_cubit.dart';
 import 'counter_page.dart';
+import 'l10n/app_localizations.dart';
+import 'locale_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,16 +25,31 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterCubit(),
-      child: MaterialApp(
-        title: 'Tasbeh',
-        // For Android 15+
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.black,
-        ),
-        home: const CounterPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CounterCubit()),
+        BlocProvider(create: (context) => LocaleCubit()),
+      ],
+      child: BlocBuilder<LocaleCubit, String>(
+        builder: (context, localeCode) {
+          return MaterialApp(
+            title: 'Tasbeh',
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale(localeCode),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              scaffoldBackgroundColor: Colors.black,
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.black,
+                surfaceTintColor: Colors.black,
+              ),
+              iconTheme: const IconThemeData(size: 32, color: Colors.white),
+            ),
+            themeMode: ThemeMode.dark,
+            home: const CounterPage(),
+          );
+        },
       ),
     );
   }

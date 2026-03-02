@@ -9,9 +9,16 @@ class CounterCubit extends HydratedCubit<int> {
     emit(state + 1);
   }
 
+  void decrement() {
+    if (state > 0) {
+      emit(state - 1);
+    }
+  }
+
   void reset() {
-    HapticFeedback.heavyImpact();
-    emit(0);
+    if (state != 0) {
+      emit(0);
+    }
   }
 
   @override
