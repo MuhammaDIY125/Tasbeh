@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'counter_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'settings_page.dart';
+import 'vibration_cubit.dart';
 
 class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
@@ -18,14 +19,15 @@ class CounterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<CounterCubit>();
+    final counterCubit = context.read<CounterCubit>();
+    final vibrationCubit = context.read<VibrationCubit>();
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: cubit.increment,
+          onTap: () => counterCubit.increment(vibrate: vibrationCubit.state),
           child: Stack(
             children: [
               Positioned(
@@ -46,11 +48,11 @@ class CounterPage extends StatelessWidget {
                 child: Column(
                   children: [
                     IconButton(
-                      onPressed: () => _resetCounter(context, cubit, t),
+                      onPressed: () => _resetCounter(context, counterCubit, t),
                       icon: const Icon(Icons.refresh_rounded),
                     ),
                     IconButton(
-                      onPressed: cubit.decrement,
+                      onPressed: counterCubit.decrement,
                       icon: const Icon(Icons.remove_circle_outline),
                     ),
                   ],

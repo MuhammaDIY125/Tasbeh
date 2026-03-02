@@ -4,8 +4,8 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 class CounterCubit extends HydratedCubit<int> {
   CounterCubit() : super(0);
 
-  void increment() {
-    HapticFeedback.heavyImpact();
+  void increment({bool vibrate = true}) {
+    if (vibrate) HapticFeedback.heavyImpact();
     emit(state + 1);
   }
 

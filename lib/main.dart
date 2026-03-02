@@ -7,6 +7,7 @@ import 'counter_cubit.dart';
 import 'counter_page.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
+import 'vibration_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,7 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => CounterCubit()),
         BlocProvider(create: (context) => LocaleCubit()),
+        BlocProvider(create: (context) => VibrationCubit()),
       ],
       child: BlocBuilder<LocaleCubit, String>(
         builder: (context, localeCode) {

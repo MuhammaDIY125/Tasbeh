@@ -3,16 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
+import 'vibration_cubit.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  bool _vibration = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +23,16 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: [
           const SizedBox(height: 16),
-          SwitchListTile(
-            title: Text(t.vibration),
-            value: _vibration,
-            activeThumbColor: colorScheme.primary,
-            onChanged: (v) => setState(() => _vibration = v),
+          BlocBuilder<VibrationCubit, bool>(
+            builder: (context, vibration) {
+              return SwitchListTile(
+                title: Text(t.vibration),
+                value: vibration,
+                activeThumbColor: colorScheme.primary,
+                onChanged: (_) => context.read<VibrationCubit>().toggle(),
+              );
+            },
           ),
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 16),
-          //   child: Divider(height: 1),
-          // ),
           BlocBuilder<LocaleCubit, String>(
             builder: (context, code) {
               return ListTile(
