@@ -37,26 +37,48 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => VibrationCubit()),
         BlocProvider(create: (context) => NotificationCubit()),
       ],
-      child: BlocBuilder<LocaleCubit, String>(
-        builder: (context, localeCode) {
-          return MaterialApp(
-            title: 'Tasbeh',
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: Locale(localeCode),
-            darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              scaffoldBackgroundColor: Colors.black,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.black,
-                surfaceTintColor: Colors.black,
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<NotificationCubit, TimeOfDay?>(
+            listener: (context, time) async {
+              if (time != null) {
+                final t = AppLocalizations.of(context);
+                if (t != null) {
+                  await NotificationService.instance.scheduleDailyReminder(
+                    time: time,
+                    title: t.notificationTitle,
+                    body: t.notificationBody,
+                  );
+                }
+              }
+            },
+          ),
+        ],
+        child: BlocBuilder<LocaleCubit, String>(
+          builder: (context, localeCode) {
+            return MaterialApp(
+              title: 'Tasbeh',
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: Locale(localeCode),
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.teal,
+                  brightness: Brightness.dark,
+                ),
+                scaffoldBackgroundColor: Colors.black,
+                appBarTheme: const AppBarTheme(
+                  backgroundColor: Colors.black,
+                  surfaceTintColor: Colors.black,
+                ),
+                iconTheme: const IconThemeData(size: 32, color: Colors.white),
               ),
-              iconTheme: const IconThemeData(size: 32, color: Colors.white),
-            ),
-            themeMode: ThemeMode.dark,
-            home: const CounterPage(),
-          );
-        },
+              themeMode: ThemeMode.dark,
+              home: const CounterPage(),
+            );
+          },
+        ),
       ),
     );
   }
