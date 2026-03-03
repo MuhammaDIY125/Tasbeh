@@ -13,6 +13,7 @@
   "cancel": "Отмена",
   "reset": "Сброс",
   "dailyReminder": "Ежедневное напоминание",
+  "dailyReminderTime": "Время напоминания",
   "dailyReminderSubtitle": "Напоминание о таcбехах",
   "reminderTimePickerTitle": "Время напоминания",
   "notificationTitle": "Время таcбеха 📿",

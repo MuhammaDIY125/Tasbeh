@@ -24,61 +24,6 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          const SizedBox(height: 16),
-          BlocBuilder<VibrationCubit, bool>(
-            builder: (context, vibration) {
-              return SwitchListTile(
-                title: Text(t.vibration),
-                value: vibration,
-                activeThumbColor: colorScheme.primary,
-                onChanged: (_) => context.read<VibrationCubit>().toggle(),
-              );
-            },
-          ),
-          BlocBuilder<NotificationCubit, TimeOfDay?>(
-            builder: (context, time) {
-              return SwitchListTile(
-                title: Text(t.dailyReminder),
-                subtitle: Text(
-                  time != null ? time.format(context) : t.dailyReminderSubtitle,
-                  style: time != null
-                      ? TextStyle(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        )
-                      : null,
-                ),
-                value: time != null,
-                activeThumbColor: colorScheme.primary,
-                onChanged: (value) async {
-                  if (!value) {
-                    context.read<NotificationCubit>().disable();
-                    await NotificationService.instance.cancelDailyReminder();
-                  } else {
-                    final granted = await NotificationService.instance
-                        .requestPermission();
-                    if (!granted && context.mounted) return;
-
-                    if (!context.mounted) return;
-                    final selectedTime = await showTimePicker(
-                      context: context,
-                      initialTime: const TimeOfDay(hour: 20, minute: 0),
-                      helpText: t.reminderTimePickerTitle,
-                    );
-
-                    if (selectedTime != null && context.mounted) {
-                      context.read<NotificationCubit>().setTime(selectedTime);
-                      await NotificationService.instance.scheduleDailyReminder(
-                        time: selectedTime,
-                        title: t.notificationTitle,
-                        body: t.notificationBody,
-                      );
-                    }
-                  }
-                },
-              );
-            },
-          ),
           BlocBuilder<LocaleCubit, String>(
             builder: (context, code) {
               return ListTile(
@@ -92,6 +37,104 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 onTap: () => _showLanguagePicker(context, code),
+              );
+            },
+          ),
+          BlocBuilder<VibrationCubit, bool>(
+            builder: (context, vibration) {
+              return SwitchListTile(
+                title: Text(t.vibration),
+                value: vibration,
+                activeThumbColor: colorScheme.primary,
+                onChanged: (_) => context.read<VibrationCubit>().toggle(),
+              );
+            },
+          ),
+          BlocBuilder<NotificationCubit, TimeOfDay?>(
+            builder: (context, time) {
+              return Column(
+                children: [
+                  SwitchListTile(
+                    title: Text(t.dailyReminder),
+                    // subtitle: Text(
+                    //   time != null ? time.format(context) : t.dailyReminderSubtitle,
+                    //   style: time != null
+                    //       ? TextStyle(
+                    //           color: colorScheme.primary,
+                    //           fontWeight: FontWeight.bold,
+                    //         )
+                    //       : null,
+                    // ),
+                    value: time != null,
+                    activeThumbColor: colorScheme.primary,
+                    onChanged: (value) async {
+                      if (!value) {
+                        context.read<NotificationCubit>().disable();
+                        await NotificationService.instance
+                            .cancelDailyReminder();
+                      } else {
+                        final granted = await NotificationService.instance
+                            .requestPermission();
+                        if (!granted && context.mounted) return;
+
+                        if (!context.mounted) return;
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: const TimeOfDay(hour: 20, minute: 0),
+                          helpText: t.reminderTimePickerTitle,
+                        );
+
+                        if (selectedTime != null && context.mounted) {
+                          context.read<NotificationCubit>().setTime(
+                            selectedTime,
+                          );
+                          await NotificationService.instance
+                              .scheduleDailyReminder(
+                                time: selectedTime,
+                                title: t.notificationTitle,
+                                body: t.notificationBody,
+                              );
+                        }
+                      }
+                    },
+                  ),
+                  if (time != null)
+                    ListTile(
+                      title: Text(t.dailyReminderTime),
+                      trailing: Text(
+                        time.format(context),
+                        style: TextStyle(
+                          color: colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () async {
+                        final granted = await NotificationService.instance
+                            .requestPermission();
+                        if (!granted && context.mounted) return;
+
+                        if (!context.mounted) return;
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: const TimeOfDay(hour: 20, minute: 0),
+                          helpText: t.reminderTimePickerTitle,
+                        );
+
+                        if (selectedTime != null && context.mounted) {
+                          context.read<NotificationCubit>().setTime(
+                            selectedTime,
+                          );
+                          await NotificationService.instance
+                              .scheduleDailyReminder(
+                                time: selectedTime,
+                                title: t.notificationTitle,
+                                body: t.notificationBody,
+                              );
+                        }
+                      },
+                    ),
+                ],
               );
             },
           ),

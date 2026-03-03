@@ -48,6 +48,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dailyReminder => 'Ежедневное напоминание';
 
   @override
+  String get dailyReminderTime => 'Время напоминания';
+
+  @override
   String get dailyReminderSubtitle => 'Напоминание о таcбехах';
 
   @override

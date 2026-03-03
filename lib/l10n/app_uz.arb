@@ -13,6 +13,7 @@
   "cancel": "Bekor qilish",
   "reset": "Tiklash",
   "dailyReminder": "Kunlik eslatma",
+  "dailyReminderTime": "Eslatma vaqti",
   "dailyReminderSubtitle": "Tasbeeh eslatmasi",
   "reminderTimePickerTitle": "Eslatma vaqti",
   "notificationTitle": "Tasbeeh vaqti 📿",

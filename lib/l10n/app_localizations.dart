@@ -175,6 +175,12 @@ abstract class AppLocalizations {
   /// **'Daily reminder'**
   String get dailyReminder;
 
+  /// No description provided for @dailyReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get dailyReminderTime;
+
   /// No description provided for @dailyReminderSubtitle.
   ///
   /// In en, this message translates to:

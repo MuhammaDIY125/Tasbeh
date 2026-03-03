@@ -48,6 +48,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get dailyReminder => 'Kunlik eslatma';
 
   @override
+  String get dailyReminderTime => 'Eslatma vaqti';
+
+  @override
   String get dailyReminderSubtitle => 'Tasbeeh eslatmasi';
 
   @override
