@@ -1,11 +1,13 @@
-import 'package:flutter/services.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:vibration/vibration.dart';
 
 class CounterCubit extends HydratedCubit<int> {
   CounterCubit() : super(0);
 
-  void increment({bool vibrate = true}) {
-    if (vibrate) HapticFeedback.heavyImpact();
+  void increment({bool vibrate = true, int intensity = 128}) {
+    if (vibrate) {
+      Vibration.vibrate(amplitude: intensity, duration: 50);
+    }
     emit(state + 1);
   }
 

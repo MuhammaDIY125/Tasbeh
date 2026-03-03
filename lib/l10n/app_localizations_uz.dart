@@ -61,4 +61,10 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get notificationBody => 'Kunlik tasbehni unutmang!';
+
+  @override
+  String get vibrationIntensity => 'Vibratsiya kuchi';
+
+  @override
+  String get level => 'Daraja';
 }

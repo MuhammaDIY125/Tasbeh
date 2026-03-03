@@ -17,5 +17,7 @@
   "dailyReminderSubtitle": "Tasbeeh eslatmasi",
   "reminderTimePickerTitle": "Eslatma vaqti",
   "notificationTitle": "Tasbeeh vaqti 📿",
-  "notificationBody": "Kunlik tasbehni unutmang!"
+  "notificationBody": "Kunlik tasbehni unutmang!",
+  "vibrationIntensity": "Vibratsiya kuchi",
+  "level": "Daraja"
 }

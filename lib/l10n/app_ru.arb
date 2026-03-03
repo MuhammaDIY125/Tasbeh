@@ -17,5 +17,7 @@
   "dailyReminderSubtitle": "Напоминание о таcбехах",
   "reminderTimePickerTitle": "Время напоминания",
   "notificationTitle": "Время таcбеха 📿",
-  "notificationBody": "Не забудьте совершить ежедневный тасбех!"
+  "notificationBody": "Не забудьте совершить ежедневный тасбех!",
+  "vibrationIntensity": "Сила вибрации",
+  "level": "Уровень"
 }

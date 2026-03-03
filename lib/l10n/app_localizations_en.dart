@@ -61,4 +61,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationBody => 'Don\'t forget to do your daily tasbeh!';
+
+  @override
+  String get vibrationIntensity => 'Vibration intensity';
+
+  @override
+  String get level => 'Level';
 }

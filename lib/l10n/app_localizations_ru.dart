@@ -61,4 +61,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get notificationBody => 'Не забудьте совершить ежедневный тасбех!';
+
+  @override
+  String get vibrationIntensity => 'Сила вибрации';
+
+  @override
+  String get level => 'Уровень';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vibration/vibration.dart';
 
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
@@ -40,13 +41,57 @@ class SettingsPage extends StatelessWidget {
               );
             },
           ),
-          BlocBuilder<VibrationCubit, bool>(
+          BlocBuilder<VibrationCubit, VibrationState>(
             builder: (context, vibration) {
-              return SwitchListTile(
-                title: Text(t.vibration),
-                value: vibration,
-                activeThumbColor: colorScheme.primary,
-                onChanged: (_) => context.read<VibrationCubit>().toggle(),
+              return Column(
+                children: [
+                  SwitchListTile(
+                    title: Text(t.vibration),
+                    value: vibration.isEnabled,
+                    activeThumbColor: colorScheme.primary,
+                    onChanged: (_) => context.read<VibrationCubit>().toggle(),
+                  ),
+                  if (vibration.isEnabled)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(t.vibrationIntensity),
+                              Text(
+                                '${t.level} ${((vibration.intensity / 255) * 9).round() + 1}',
+                                style: TextStyle(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Slider(
+                            value: vibration.intensity.toDouble(),
+                            min: 1,
+                            max: 255,
+                            divisions: 9,
+                            activeColor: colorScheme.primary,
+                            onChanged: (value) {
+                              final intensity = value.toInt();
+                              context.read<VibrationCubit>().setIntensity(
+                                intensity,
+                              );
+                              // Даем пользователю почувствовать выбранную силу
+                              Vibration.vibrate(
+                                amplitude: intensity,
+                                duration: 30,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               );
             },
           ),

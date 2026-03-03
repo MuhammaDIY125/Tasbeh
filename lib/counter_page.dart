@@ -27,7 +27,10 @@ class CounterPage extends StatelessWidget {
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => counterCubit.increment(vibrate: vibrationCubit.state),
+          onTap: () => counterCubit.increment(
+            vibrate: vibrationCubit.state.isEnabled,
+            intensity: vibrationCubit.state.intensity,
+          ),
           child: Stack(
             children: [
               Positioned(

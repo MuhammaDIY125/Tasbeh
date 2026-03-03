@@ -204,6 +204,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t forget to do your daily tasbeh!'**
   String get notificationBody;
+
+  /// No description provided for @vibrationIntensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Vibration intensity'**
+  String get vibrationIntensity;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
