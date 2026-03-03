@@ -103,7 +103,7 @@ class SettingsPage extends StatelessWidget {
   String _getLanguageName(String code) {
     switch (code) {
       case 'uz':
-        return 'O\'zbek';
+        return 'O‘zbek';
       case 'ru':
         return 'Русский';
       case 'en':
