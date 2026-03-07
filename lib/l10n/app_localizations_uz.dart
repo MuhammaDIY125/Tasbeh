@@ -57,7 +57,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get reminderTimePickerTitle => 'Eslatma vaqti';
 
   @override
-  String get notificationTitle => 'Tasbeeh vaqti 📿';
+  String get notificationTitle => 'Tasbeh vaqti 📿';
 
   @override
   String get notificationBody => 'Kunlik tasbehni unutmang!';
