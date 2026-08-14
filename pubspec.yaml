@@ -1,5 +1,5 @@
 name: tasbeh
-description: "A new Flutter project."
+description: "Счётчик тасбиха: зикр с вибрацией и ежедневным напоминанием."
 publish_to: 'none'
 
 version: 1.0.0+5
@@ -23,6 +23,7 @@ dependencies:
   flutter_timezone: ^5.0.1
   vibration: ^3.1.8
   in_app_update: ^5.0.0
+  wakelock_plus: ^1.7.0
 
 dev_dependencies:
   flutter_test:

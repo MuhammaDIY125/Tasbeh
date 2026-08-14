@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'counter_cubit.dart';
 import 'l10n/app_localizations.dart';
@@ -26,33 +27,36 @@ class _CounterPageState extends State<CounterPage> {
   @override
   void initState() {
     super.initState();
-    _hideStatusBar();
+    _enterCountingMode();
   }
 
   @override
   void dispose() {
-    _showSystemBars();
+    _exitCountingMode();
     super.dispose();
   }
 
-  /// Прячет верхнюю системную панель, оставляя нижнюю навигацию доступной.
-  void _hideStatusBar() {
+  /// Прячет верхнюю системную панель и удерживает экран включённым:
+  /// зикр можно читать долго, не касаясь экрана.
+  void _enterCountingMode() {
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
       overlays: const [SystemUiOverlay.bottom],
     );
+    WakelockPlus.enable();
   }
 
-  void _showSystemBars() {
+  void _exitCountingMode() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    WakelockPlus.disable();
   }
 
   Future<void> _openSettings(BuildContext context) async {
-    _showSystemBars();
+    _exitCountingMode();
     await Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const SettingsPage()));
-    if (mounted) _hideStatusBar();
+    if (mounted) _enterCountingMode();
   }
 
   @override

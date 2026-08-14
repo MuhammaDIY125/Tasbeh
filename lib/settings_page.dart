@@ -14,8 +14,6 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -24,182 +22,48 @@ class SettingsPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView(
-        children: [
-          BlocBuilder<LocaleCubit, String>(
-            builder: (context, code) {
-              return ListTile(
-                title: Text(t.language),
-                trailing: Text(
-                  _getLanguageName(code),
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                onTap: () => _showLanguagePicker(context, code),
-              );
-            },
-          ),
-          BlocBuilder<VibrationCubit, VibrationState>(
-            builder: (context, vibration) {
-              return Column(
-                children: [
-                  SwitchListTile(
-                    title: Text(t.vibration),
-                    value: vibration.isEnabled,
-                    activeThumbColor: colorScheme.primary,
-                    onChanged: (_) => context.read<VibrationCubit>().toggle(),
-                  ),
-                  if (vibration.isEnabled)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(t.vibrationIntensity),
-                              Text(
-                                '${t.level} ${((vibration.intensity / 255) * 9).round() + 1}',
-                                style: TextStyle(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Slider(
-                            value: vibration.intensity.toDouble(),
-                            min: 1,
-                            max: 255,
-                            divisions: 9,
-                            activeColor: colorScheme.primary,
-                            onChanged: (value) {
-                              final intensity = value.toInt();
-                              context.read<VibrationCubit>().setIntensity(
-                                intensity,
-                              );
-                              // Даем пользователю почувствовать выбранную силу
-                              Vibration.vibrate(
-                                amplitude: intensity,
-                                duration: 30,
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-          BlocBuilder<NotificationCubit, TimeOfDay?>(
-            builder: (context, time) {
-              return Column(
-                children: [
-                  SwitchListTile(
-                    title: Text(t.dailyReminder),
-                    // subtitle: Text(
-                    //   time != null ? time.format(context) : t.dailyReminderSubtitle,
-                    //   style: time != null
-                    //       ? TextStyle(
-                    //           color: colorScheme.primary,
-                    //           fontWeight: FontWeight.bold,
-                    //         )
-                    //       : null,
-                    // ),
-                    value: time != null,
-                    activeThumbColor: colorScheme.primary,
-                    onChanged: (value) async {
-                      if (!value) {
-                        context.read<NotificationCubit>().disable();
-                        await NotificationService.instance
-                            .cancelDailyReminder();
-                      } else {
-                        final granted = await NotificationService.instance
-                            .requestPermission();
-                        if (!granted && context.mounted) return;
-
-                        if (!context.mounted) return;
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: const TimeOfDay(hour: 20, minute: 0),
-                          helpText: t.reminderTimePickerTitle,
-                        );
-
-                        if (selectedTime != null && context.mounted) {
-                          context.read<NotificationCubit>().setTime(
-                            selectedTime,
-                          );
-                          await NotificationService.instance
-                              .scheduleDailyReminder(
-                                time: selectedTime,
-                                title: t.notificationTitle,
-                                body: t.notificationBody,
-                              );
-                        }
-                      }
-                    },
-                  ),
-                  if (time != null)
-                    ListTile(
-                      title: Text(t.dailyReminderTime),
-                      trailing: Text(
-                        time.format(context),
-                        style: TextStyle(
-                          color: colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      onTap: () async {
-                        final granted = await NotificationService.instance
-                            .requestPermission();
-                        if (!granted && context.mounted) return;
-
-                        if (!context.mounted) return;
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: const TimeOfDay(hour: 20, minute: 0),
-                          helpText: t.reminderTimePickerTitle,
-                        );
-
-                        if (selectedTime != null && context.mounted) {
-                          context.read<NotificationCubit>().setTime(
-                            selectedTime,
-                          );
-                          await NotificationService.instance
-                              .scheduleDailyReminder(
-                                time: selectedTime,
-                                title: t.notificationTitle,
-                                body: t.notificationBody,
-                              );
-                        }
-                      },
-                    ),
-                ],
-              );
-            },
-          ),
+        children: const [
+          _LanguageSection(),
+          _VibrationSection(),
+          _ReminderSection(),
         ],
       ),
     );
   }
+}
 
-  String _getLanguageName(String code) {
-    switch (code) {
-      case 'uz':
-        return 'O‘zbek';
-      case 'ru':
-        return 'Русский';
-      case 'en':
-        return 'English';
-      default:
-        return 'English';
-    }
+/// Выбор языка интерфейса.
+class _LanguageSection extends StatelessWidget {
+  const _LanguageSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return BlocBuilder<LocaleCubit, String>(
+      builder: (context, code) {
+        return ListTile(
+          title: Text(t.language),
+          trailing: Text(
+            _languageName(code),
+            style: TextStyle(
+              color: colorScheme.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          onTap: () => _showLanguagePicker(context, code),
+        );
+      },
+    );
   }
+
+  static String _languageName(String code) => switch (code) {
+    'uz' => 'O‘zbek',
+    'ru' => 'Русский',
+    _ => 'English',
+  };
 
   void _showLanguagePicker(BuildContext context, String currentCode) {
     final t = AppLocalizations.of(context)!;
@@ -211,7 +75,7 @@ class SettingsPage extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) {
+      builder: (sheetContext) {
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -225,21 +89,15 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                _LanguageTile(
-                  name: 'O\'zbek',
-                  isSelected: currentCode == 'uz',
-                  onTap: () => _selectLanguage(context, 'uz'),
-                ),
-                _LanguageTile(
-                  name: 'Русский',
-                  isSelected: currentCode == 'ru',
-                  onTap: () => _selectLanguage(context, 'ru'),
-                ),
-                _LanguageTile(
-                  name: 'English',
-                  isSelected: currentCode == 'en',
-                  onTap: () => _selectLanguage(context, 'en'),
-                ),
+                for (final code in const ['uz', 'ru', 'en'])
+                  _LanguageTile(
+                    name: _languageName(code),
+                    isSelected: currentCode == code,
+                    onTap: () {
+                      context.read<LocaleCubit>().setLocale(code);
+                      Navigator.pop(sheetContext);
+                    },
+                  ),
                 const SizedBox(height: 8),
               ],
             ),
@@ -248,10 +106,148 @@ class SettingsPage extends StatelessWidget {
       },
     );
   }
+}
 
-  void _selectLanguage(BuildContext context, String code) {
-    context.read<LocaleCubit>().setLocale(code);
-    Navigator.pop(context);
+/// Включение вибрации и настройка её силы.
+class _VibrationSection extends StatelessWidget {
+  const _VibrationSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return BlocBuilder<VibrationCubit, VibrationState>(
+      builder: (context, vibration) {
+        return Column(
+          children: [
+            SwitchListTile(
+              title: Text(t.vibration),
+              value: vibration.isEnabled,
+              activeThumbColor: colorScheme.primary,
+              onChanged: (_) => context.read<VibrationCubit>().toggle(),
+            ),
+            if (vibration.isEnabled)
+              _IntensitySlider(intensity: vibration.intensity),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _IntensitySlider extends StatelessWidget {
+  final int intensity;
+
+  const _IntensitySlider({required this.intensity});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(t.vibrationIntensity),
+              Text(
+                '${t.level} ${((intensity / 255) * 9).round() + 1}',
+                style: TextStyle(
+                  color: colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Slider(
+            value: intensity.toDouble(),
+            min: 1,
+            max: 255,
+            divisions: 9,
+            activeColor: colorScheme.primary,
+            onChanged: (value) {
+              final selected = value.toInt();
+              context.read<VibrationCubit>().setIntensity(selected);
+              // Даем пользователю почувствовать выбранную силу
+              Vibration.vibrate(amplitude: selected, duration: 30);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Ежедневное напоминание: включение и время.
+class _ReminderSection extends StatelessWidget {
+  const _ReminderSection();
+
+  static const _defaultTime = TimeOfDay(hour: 20, minute: 0);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return BlocBuilder<NotificationCubit, TimeOfDay?>(
+      builder: (context, time) {
+        return Column(
+          children: [
+            SwitchListTile(
+              title: Text(t.dailyReminder),
+              value: time != null,
+              activeThumbColor: colorScheme.primary,
+              onChanged: (enabled) {
+                if (enabled) {
+                  _pickTime(context);
+                } else {
+                  context.read<NotificationCubit>().disable();
+                }
+              },
+            ),
+            if (time != null)
+              ListTile(
+                title: Text(t.dailyReminderTime),
+                trailing: Text(
+                  time.format(context),
+                  style: TextStyle(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                onTap: () => _pickTime(context, initialTime: time),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Запрашивает разрешение и сохраняет выбранное время.
+  ///
+  /// Само уведомление планирует слушатель `NotificationCubit` в `MainApp` —
+  /// так время и язык напоминания всегда пересобираются из одного места.
+  Future<void> _pickTime(BuildContext context, {TimeOfDay? initialTime}) async {
+    final t = AppLocalizations.of(context)!;
+    final notificationCubit = context.read<NotificationCubit>();
+
+    final granted = await NotificationService.instance.requestPermission();
+    if (!granted || !context.mounted) return;
+
+    final selectedTime = await showTimePicker(
+      context: context,
+      initialTime: initialTime ?? _defaultTime,
+      helpText: t.reminderTimePickerTitle,
+    );
+    if (selectedTime == null) return;
+
+    notificationCubit.setTime(selectedTime);
   }
 }
 

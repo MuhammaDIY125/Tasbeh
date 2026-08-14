@@ -26,6 +26,28 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
+/// Планирует ежедневное напоминание на языке `localeCode` либо отменяет его,
+/// если время не задано.
+///
+/// Локализации берутся напрямую у делегата: слушатели живут выше
+/// `MaterialApp`, поэтому `AppLocalizations.of(context)` здесь вернул бы null.
+Future<void> _syncReminder({
+  required String localeCode,
+  required TimeOfDay? time,
+}) async {
+  if (time == null) {
+    await NotificationService.instance.cancelDailyReminder();
+    return;
+  }
+
+  final t = await AppLocalizations.delegate.load(Locale(localeCode));
+  await NotificationService.instance.scheduleDailyReminder(
+    time: time,
+    title: t.notificationTitle,
+    body: t.notificationBody,
+  );
+}
+
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
@@ -57,18 +79,18 @@ class _MainAppState extends State<MainApp> {
       child: MultiBlocListener(
         listeners: [
           BlocListener<NotificationCubit, TimeOfDay?>(
-            listener: (context, time) async {
-              if (time != null) {
-                final t = AppLocalizations.of(context);
-                if (t != null) {
-                  await NotificationService.instance.scheduleDailyReminder(
-                    time: time,
-                    title: t.notificationTitle,
-                    body: t.notificationBody,
-                  );
-                }
-              }
-            },
+            listener: (context, time) => _syncReminder(
+              localeCode: context.read<LocaleCubit>().state,
+              time: time,
+            ),
+          ),
+          // Тексты уведомления фиксируются в момент планирования, поэтому
+          // при смене языка напоминание нужно пересоздать заново.
+          BlocListener<LocaleCubit, String>(
+            listener: (context, localeCode) => _syncReminder(
+              localeCode: localeCode,
+              time: context.read<NotificationCubit>().state,
+            ),
           ),
         ],
         child: BlocBuilder<LocaleCubit, String>(
