@@ -19,5 +19,7 @@
   "notificationTitle": "Tasbeh time 📿",
   "notificationBody": "Don't forget to do your daily tasbeh!",
   "vibrationIntensity": "Vibration intensity",
-  "level": "Level"
+  "level": "Level",
+  "updateReady": "Update downloaded",
+  "updateRestart": "Restart"
 }

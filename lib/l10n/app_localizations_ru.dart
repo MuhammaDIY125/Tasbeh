@@ -67,4 +67,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get level => 'Уровень';
+
+  @override
+  String get updateReady => 'Обновление загружено';
+
+  @override
+  String get updateRestart => 'Перезапустить';
 }

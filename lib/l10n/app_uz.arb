@@ -19,5 +19,7 @@
   "notificationTitle": "Tasbeh vaqti 📿",
   "notificationBody": "Kunlik tasbehni unutmang!",
   "vibrationIntensity": "Vibratsiya kuchi",
-  "level": "Daraja"
+  "level": "Daraja",
+  "updateReady": "Yangilanish yuklab olindi",
+  "updateRestart": "Qayta ishga tushirish"
 }

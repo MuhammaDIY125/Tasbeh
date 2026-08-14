@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'counter_cubit.dart';
 import 'counter_page.dart';
+import 'in_app_update_service.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
 import 'notification_cubit.dart';
@@ -25,8 +26,24 @@ Future<void> main() async {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Проверяем обновление после первого кадра: к этому моменту
+    // `scaffoldMessengerKey` уже привязан к дереву и сможет показать SnackBar.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      InAppUpdateService.checkForUpdate();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +75,7 @@ class MainApp extends StatelessWidget {
           builder: (context, localeCode) {
             return MaterialApp(
               title: 'Tasbeh',
+              scaffoldMessengerKey: scaffoldMessengerKey,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               locale: Locale(localeCode),

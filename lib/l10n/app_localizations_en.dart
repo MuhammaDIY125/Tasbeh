@@ -67,4 +67,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get level => 'Level';
+
+  @override
+  String get updateReady => 'Update downloaded';
+
+  @override
+  String get updateRestart => 'Restart';
 }

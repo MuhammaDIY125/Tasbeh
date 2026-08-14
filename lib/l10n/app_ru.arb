@@ -19,5 +19,7 @@
   "notificationTitle": "Время таcбеха 📿",
   "notificationBody": "Не забудьте совершить ежедневный тасбех!",
   "vibrationIntensity": "Сила вибрации",
-  "level": "Уровень"
+  "level": "Уровень",
+  "updateReady": "Обновление загружено",
+  "updateRestart": "Перезапустить"
 }

@@ -67,4 +67,10 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get level => 'Daraja';
+
+  @override
+  String get updateReady => 'Yangilanish yuklab olindi';
+
+  @override
+  String get updateRestart => 'Qayta ishga tushirish';
 }
