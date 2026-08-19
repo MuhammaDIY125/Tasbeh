@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Иконка для системного splash-экрана Android 12+.
+
+     Штатная `@mipmap/ic_launcher` — легаси-иконка без adaptive-слоёв, а под
+     такие система подкладывает белый круг. Здесь тот же логотип завёрнут в
+     `adaptive-icon` с чёрной подложкой: круг маски сливается с фоном и остаётся
+     только сама метка. Иконку в лаунчере это не меняет — манифест по-прежнему
+     ссылается на `@mipmap/ic_launcher`, а splash берёт этот drawable через
+     `windowSplashScreenAnimatedIcon`.
+
+     `@drawable/splash_logo` — не исходный `assets/icon.png`, а уменьшенная до
+     72% его копия на чёрном холсте. В adaptive-иконке под маской видна только
+     центральная часть слоя (круг диаметром 72 из 108 единиц), а «33» занимает
+     69.5% ширины исходника — то есть 75 единиц, шире окна просмотра, и цифры
+     срезало по бокам. После уменьшения bbox метки укладывается в безопасный
+     круг: полудиагональ 32.0 при радиусе 33. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@android:color/black" />
+    <foreground android:drawable="@drawable/splash_logo" />
+</adaptive-icon>
