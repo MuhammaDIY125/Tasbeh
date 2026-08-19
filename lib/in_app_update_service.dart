@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -50,7 +51,10 @@ class InAppUpdateService {
       }
     } catch (e) {
       // Сбой проверки обновлений не должен влиять на работу приложения.
-      debugPrint('In-app update check failed: $e');
+      log(
+        'InAppUpdateService: update check failed: $e',
+        name: 'InAppUpdateService',
+      );
     }
   }
 
