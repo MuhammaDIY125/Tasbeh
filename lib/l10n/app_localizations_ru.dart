@@ -36,7 +36,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resetConfirmationTitle => 'Сбросить счётчик?';
 
   @override
-  String get resetConfirmationMessage => 'Вы уверены, что хотите обнулить счётчик?';
+  String get resetConfirmationMessage =>
+      'Вы уверены, что хотите обнулить счётчик?';
 
   @override
   String get cancel => 'Отмена';
@@ -57,10 +58,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reminderTimePickerTitle => 'Время напоминания';
 
   @override
-  String get notificationTitle => 'Время таcбеха 📿';
+  String get notificationTitle => 'Время тасбиха';
 
   @override
-  String get notificationBody => 'Не забудьте совершить ежедневный тасбех!';
+  String get notificationBody =>
+      'Не забудьте о зикре — совершите ежедневный тасбех.';
+
+  @override
+  String get notificationChannelName => 'Ежедневное напоминание';
+
+  @override
+  String get notificationChannelDescription =>
+      'Напоминание о тасбехе в выбранное время';
 
   @override
   String get vibrationIntensity => 'Сила вибрации';

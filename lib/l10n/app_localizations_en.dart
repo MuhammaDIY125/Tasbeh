@@ -36,7 +36,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetConfirmationTitle => 'Reset counter?';
 
   @override
-  String get resetConfirmationMessage => 'Are you sure you want to reset the counter to zero?';
+  String get resetConfirmationMessage =>
+      'Are you sure you want to reset the counter to zero?';
 
   @override
   String get cancel => 'Cancel';
@@ -57,10 +58,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reminderTimePickerTitle => 'Reminder time';
 
   @override
-  String get notificationTitle => 'Tasbeh time 📿';
+  String get notificationTitle => 'Time for tasbeh';
 
   @override
-  String get notificationBody => 'Don\'t forget to do your daily tasbeh!';
+  String get notificationBody =>
+      'Take a moment for dhikr — complete your daily tasbeh.';
+
+  @override
+  String get notificationChannelName => 'Daily reminder';
+
+  @override
+  String get notificationChannelDescription =>
+      'Tasbeh reminder at the time you chose';
 
   @override
   String get vibrationIntensity => 'Vibration intensity';

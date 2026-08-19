@@ -36,7 +36,8 @@ class AppLocalizationsUz extends AppLocalizations {
   String get resetConfirmationTitle => 'Hisoblagichni tiklash?';
 
   @override
-  String get resetConfirmationMessage => 'Hisoblagichni nolga tushirishga aminmisiz?';
+  String get resetConfirmationMessage =>
+      'Hisoblagichni nolga tushirishga aminmisiz?';
 
   @override
   String get cancel => 'Bekor qilish';
@@ -57,10 +58,18 @@ class AppLocalizationsUz extends AppLocalizations {
   String get reminderTimePickerTitle => 'Eslatma vaqti';
 
   @override
-  String get notificationTitle => 'Tasbeh vaqti 📿';
+  String get notificationTitle => 'Tasbeh vaqti';
 
   @override
-  String get notificationBody => 'Kunlik tasbehni unutmang!';
+  String get notificationBody =>
+      'Kunlik zikringizni unutmang — bir tasbeh o‘qib qo‘ying.';
+
+  @override
+  String get notificationChannelName => 'Kunlik eslatma';
+
+  @override
+  String get notificationChannelDescription =>
+      'Har kuni belgilangan vaqtda tasbeh haqida eslatma';
 
   @override
   String get vibrationIntensity => 'Vibratsiya kuchi';

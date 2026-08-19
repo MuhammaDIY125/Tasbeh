@@ -15,8 +15,19 @@ class NotificationService {
   final _plugin = FlutterLocalNotificationsPlugin();
 
   static const _dailyReminderId = 1;
-  static const _channelId = 'tasbeh_daily_reminder';
-  static const _channelName = 'Daily Tasbeh Reminder';
+
+  /// Канал версионируется: Android не применяет изменения настроек
+  /// (важность, звук, категория) к уже созданному каналу.
+  static const _channelId = 'tasbeh_daily_reminder_v2';
+  static const _legacyChannelId = 'tasbeh_daily_reminder';
+
+  /// Силуэт логотипа для статус-бара: Android рисует small icon
+  /// по альфа-каналу, поэтому непрозрачный логотип превращался
+  /// в белый квадрат. Генерируется `tool/generate_notification_icon.py`.
+  static const _statusBarIcon = 'ic_stat_tasbeh';
+  static const _largeIcon = DrawableResourceAndroidBitmap(
+    '@mipmap/ic_launcher',
+  );
 
   /// Инициализирует плагин.
   Future<void> initialize() async {
@@ -38,7 +49,7 @@ class NotificationService {
     }
 
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/$_statusBarIcon',
     );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -60,7 +71,19 @@ class NotificationService {
         );
       },
     );
+    await _removeLegacyChannel();
+
     log('NotificationService: initialized', name: 'NotificationService');
+  }
+
+  /// Удаляет канал прошлых версий, иначе система продолжит показывать
+  /// уведомления с его старыми настройками.
+  Future<void> _removeLegacyChannel() async {
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await androidPlugin?.deleteNotificationChannel(channelId: _legacyChannelId);
   }
 
   /// Запрашивает разрешения.
@@ -119,11 +142,36 @@ class NotificationService {
     return await androidPlugin.canScheduleExactNotifications() ?? false;
   }
 
+  /// Создаёт (или обновляет название) канал уведомлений.
+  ///
+  /// Имя и описание видны в системных настройках, поэтому приходят
+  /// из локализаций и обновляются при смене языка.
+  Future<void> _ensureChannel({
+    required String name,
+    required String description,
+  }) async {
+    final androidPlugin = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    await androidPlugin?.createNotificationChannel(
+      AndroidNotificationChannel(
+        _channelId,
+        name,
+        description: description,
+        importance: Importance.high,
+      ),
+    );
+  }
+
   /// Планирует ежедневное уведомление.
   Future<void> scheduleDailyReminder({
     required TimeOfDay time,
     required String title,
     required String body,
+    required String channelName,
+    required String channelDescription,
   }) async {
     try {
       await cancelDailyReminder();
@@ -143,14 +191,22 @@ class NotificationService {
         return;
       }
 
-      const androidDetails = AndroidNotificationDetails(
+      await _ensureChannel(name: channelName, description: channelDescription);
+
+      final androidDetails = AndroidNotificationDetails(
         _channelId,
-        _channelName,
-        importance: Importance.max,
-        priority: Priority.max,
+        channelName,
+        channelDescription: channelDescription,
+        icon: _statusBarIcon,
+        largeIcon: _largeIcon,
+        importance: Importance.high,
+        priority: Priority.high,
         showWhen: true,
-        category: AndroidNotificationCategory.alarm,
-        fullScreenIntent: true,
+        ticker: title,
+        // Напоминание, а не будильник: без перехвата экрана.
+        category: AndroidNotificationCategory.reminder,
+        visibility: NotificationVisibility.public,
+        styleInformation: BigTextStyleInformation(body, contentTitle: title),
       );
 
       const iosDetails = DarwinNotificationDetails(
@@ -160,7 +216,7 @@ class NotificationService {
         interruptionLevel: InterruptionLevel.timeSensitive,
       );
 
-      const details = NotificationDetails(
+      final details = NotificationDetails(
         android: androidDetails,
         iOS: iosDetails,
       );
@@ -177,7 +233,9 @@ class NotificationService {
         body: body,
         scheduledDate: nextDate,
         notificationDetails: details,
-        androidScheduleMode: AndroidScheduleMode.alarmClock,
+        // exactAllowWhileIdle доставляет точно в срок и, в отличие от
+        // alarmClock, не держит иконку будильника в статус-баре.
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: 'daily_tasbeh',
       );

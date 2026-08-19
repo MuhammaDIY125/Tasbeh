@@ -45,6 +45,8 @@ Future<void> _syncReminder({
     time: time,
     title: t.notificationTitle,
     body: t.notificationBody,
+    channelName: t.notificationChannelName,
+    channelDescription: t.notificationChannelDescription,
   );
 }
 
