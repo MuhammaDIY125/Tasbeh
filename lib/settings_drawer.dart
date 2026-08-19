@@ -218,7 +218,7 @@ class _ReminderSection extends StatelessWidget {
             ),
             if (time != null)
               ListTile(
-                title: Text(t.dailyReminderTime),
+                title: Text(t.reminderTime),
                 trailing: _ValueLabel(time.format(context)),
                 onTap: () => _pickTime(context, initialTime: time),
               ),
@@ -242,7 +242,7 @@ class _ReminderSection extends StatelessWidget {
     final selectedTime = await showTimePicker(
       context: context,
       initialTime: initialTime ?? _defaultTime,
-      helpText: t.reminderTimePickerTitle,
+      helpText: t.reminderTime,
     );
     if (selectedTime == null) return;
 

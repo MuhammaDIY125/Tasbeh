@@ -9,25 +9,16 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'Tasbeh';
-
-  @override
   String get settingsTitle => 'Настройки';
-
-  @override
-  String get darkTheme => 'Темная тема';
-
-  @override
-  String get sound => 'Звук';
 
   @override
   String get vibration => 'Вибрация';
 
   @override
-  String get resetSettings => 'Сбросить настройки';
+  String get vibrationIntensity => 'Сила вибрации';
 
   @override
-  String get counter => 'Счётчик';
+  String get level => 'Уровень';
 
   @override
   String get language => 'Язык';
@@ -49,13 +40,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get dailyReminder => 'Ежедневное напоминание';
 
   @override
-  String get dailyReminderTime => 'Время напоминания';
-
-  @override
-  String get dailyReminderSubtitle => 'Напоминание о таcбехах';
-
-  @override
-  String get reminderTimePickerTitle => 'Время напоминания';
+  String get reminderTime => 'Время напоминания';
 
   @override
   String get notificationTitle => 'Время тасбиха';
@@ -70,12 +55,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get notificationChannelDescription =>
       'Напоминание о тасбехе в выбранное время';
-
-  @override
-  String get vibrationIntensity => 'Сила вибрации';
-
-  @override
-  String get level => 'Уровень';
 
   @override
   String get updateReady => 'Обновление загружено';

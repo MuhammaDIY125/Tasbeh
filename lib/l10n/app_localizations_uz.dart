@@ -9,25 +9,16 @@ class AppLocalizationsUz extends AppLocalizations {
   AppLocalizationsUz([String locale = 'uz']) : super(locale);
 
   @override
-  String get appTitle => 'Tasbeh';
-
-  @override
   String get settingsTitle => 'Sozlamalar';
-
-  @override
-  String get darkTheme => 'Qorong‘i mavzu';
-
-  @override
-  String get sound => 'Ovoz';
 
   @override
   String get vibration => 'Vibratsiya';
 
   @override
-  String get resetSettings => 'Sozlamalarni tiklash';
+  String get vibrationIntensity => 'Vibratsiya kuchi';
 
   @override
-  String get counter => 'Hisoblagich';
+  String get level => 'Daraja';
 
   @override
   String get language => 'Til';
@@ -49,13 +40,7 @@ class AppLocalizationsUz extends AppLocalizations {
   String get dailyReminder => 'Kunlik eslatma';
 
   @override
-  String get dailyReminderTime => 'Eslatma vaqti';
-
-  @override
-  String get dailyReminderSubtitle => 'Tasbeeh eslatmasi';
-
-  @override
-  String get reminderTimePickerTitle => 'Eslatma vaqti';
+  String get reminderTime => 'Eslatma vaqti';
 
   @override
   String get notificationTitle => 'Tasbeh vaqti';
@@ -70,12 +55,6 @@ class AppLocalizationsUz extends AppLocalizations {
   @override
   String get notificationChannelDescription =>
       'Har kuni belgilangan vaqtda tasbeh haqida eslatma';
-
-  @override
-  String get vibrationIntensity => 'Vibratsiya kuchi';
-
-  @override
-  String get level => 'Daraja';
 
   @override
   String get updateReady => 'Yangilanish yuklab olindi';

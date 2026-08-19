@@ -9,25 +9,16 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Tasbeh';
-
-  @override
   String get settingsTitle => 'Settings';
-
-  @override
-  String get darkTheme => 'Dark theme';
-
-  @override
-  String get sound => 'Sound';
 
   @override
   String get vibration => 'Vibration';
 
   @override
-  String get resetSettings => 'Reset settings';
+  String get vibrationIntensity => 'Vibration intensity';
 
   @override
-  String get counter => 'Counter';
+  String get level => 'Level';
 
   @override
   String get language => 'Language';
@@ -49,13 +40,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyReminder => 'Daily reminder';
 
   @override
-  String get dailyReminderTime => 'Reminder time';
-
-  @override
-  String get dailyReminderSubtitle => 'Tasbeh reminder';
-
-  @override
-  String get reminderTimePickerTitle => 'Reminder time';
+  String get reminderTime => 'Reminder time';
 
   @override
   String get notificationTitle => 'Time for tasbeh';
@@ -70,12 +55,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notificationChannelDescription =>
       'Tasbeh reminder at the time you chose';
-
-  @override
-  String get vibrationIntensity => 'Vibration intensity';
-
-  @override
-  String get level => 'Level';
 
   @override
   String get updateReady => 'Update downloaded';

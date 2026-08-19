@@ -100,29 +100,11 @@ abstract class AppLocalizations {
     Locale('uz'),
   ];
 
-  /// No description provided for @appTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbeh'**
-  String get appTitle;
-
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settingsTitle;
-
-  /// No description provided for @darkTheme.
-  ///
-  /// In en, this message translates to:
-  /// **'Dark theme'**
-  String get darkTheme;
-
-  /// No description provided for @sound.
-  ///
-  /// In en, this message translates to:
-  /// **'Sound'**
-  String get sound;
 
   /// No description provided for @vibration.
   ///
@@ -130,17 +112,17 @@ abstract class AppLocalizations {
   /// **'Vibration'**
   String get vibration;
 
-  /// No description provided for @resetSettings.
+  /// No description provided for @vibrationIntensity.
   ///
   /// In en, this message translates to:
-  /// **'Reset settings'**
-  String get resetSettings;
+  /// **'Vibration intensity'**
+  String get vibrationIntensity;
 
-  /// No description provided for @counter.
+  /// No description provided for @level.
   ///
   /// In en, this message translates to:
-  /// **'Counter'**
-  String get counter;
+  /// **'Level'**
+  String get level;
 
   /// No description provided for @language.
   ///
@@ -178,23 +160,11 @@ abstract class AppLocalizations {
   /// **'Daily reminder'**
   String get dailyReminder;
 
-  /// No description provided for @dailyReminderTime.
+  /// No description provided for @reminderTime.
   ///
   /// In en, this message translates to:
   /// **'Reminder time'**
-  String get dailyReminderTime;
-
-  /// No description provided for @dailyReminderSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasbeh reminder'**
-  String get dailyReminderSubtitle;
-
-  /// No description provided for @reminderTimePickerTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminder time'**
-  String get reminderTimePickerTitle;
+  String get reminderTime;
 
   /// No description provided for @notificationTitle.
   ///
@@ -219,18 +189,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tasbeh reminder at the time you chose'**
   String get notificationChannelDescription;
-
-  /// No description provided for @vibrationIntensity.
-  ///
-  /// In en, this message translates to:
-  /// **'Vibration intensity'**
-  String get vibrationIntensity;
-
-  /// No description provided for @level.
-  ///
-  /// In en, this message translates to:
-  /// **'Level'**
-  String get level;
 
   /// No description provided for @updateReady.
   ///
