@@ -5,7 +5,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'counter_cubit.dart';
 import 'l10n/app_localizations.dart';
-import 'settings_page.dart';
+import 'settings_drawer.dart';
 import 'vibration_cubit.dart';
 
 class CounterPage extends StatefulWidget {
@@ -51,14 +51,6 @@ class _CounterPageState extends State<CounterPage> {
     WakelockPlus.disable();
   }
 
-  Future<void> _openSettings(BuildContext context) async {
-    _exitCountingMode();
-    await Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const SettingsPage()));
-    if (mounted) _enterCountingMode();
-  }
-
   @override
   Widget build(BuildContext context) {
     final counterCubit = context.read<CounterCubit>();
@@ -66,6 +58,10 @@ class _CounterPageState extends State<CounterPage> {
     final t = AppLocalizations.of(context)!;
 
     return Scaffold(
+      drawer: const SettingsDrawer(),
+      // Счёт идёт частыми касаниями по всему экрану: свайп от края открывал бы
+      // настройки случайно, поэтому оставляем только кнопку.
+      drawerEnableOpenDragGesture: false,
       body: SafeArea(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -78,9 +74,13 @@ class _CounterPageState extends State<CounterPage> {
               Positioned(
                 left: CounterPage.padding,
                 top: CounterPage.padding,
-                child: IconButton(
-                  onPressed: () => _openSettings(context),
-                  icon: const Icon(Icons.menu_rounded),
+                // `Builder` даёт контекст ниже `Scaffold` — только из него
+                // виден `ScaffoldState` с панелью настроек.
+                child: Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    icon: const Icon(Icons.menu_rounded),
+                  ),
                 ),
               ),
               Positioned(

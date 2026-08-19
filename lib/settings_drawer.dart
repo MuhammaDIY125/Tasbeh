@@ -8,25 +8,46 @@ import 'notification_cubit.dart';
 import 'notification_service.dart';
 import 'vibration_cubit.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+/// Настройки в виде выезжающей слева панели.
+///
+/// Панель живёт внутри `Scaffold` главного экрана, поэтому открытие настроек
+/// не создаёт новый маршрут и не трогает режим системных панелей — счётчик
+/// под ней остаётся на месте.
+class SettingsDrawer extends StatelessWidget {
+  const SettingsDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(t.settingsTitle),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: ListView(
-        children: const [
-          _LanguageSection(),
-          _VibrationSection(),
-          _ReminderSection(),
-        ],
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+              child: Text(
+                t.settingsTitle,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(top: 8),
+                children: const [
+                  _LanguageSection(),
+                  _VibrationSection(),
+                  _ReminderSection(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
