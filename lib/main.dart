@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'app_theme.dart';
 import 'counter_cubit.dart';
 import 'counter_page.dart';
 import 'in_app_update_service.dart';
@@ -71,7 +72,7 @@ class _MainAppState extends State<MainApp> {
     super.initState();
 
     // Проверяем обновление после первого кадра: к этому моменту
-    // `scaffoldMessengerKey` уже привязан к дереву и сможет показать SnackBar.
+    // `navigatorKey` уже привязан к дереву и сможет показать диалог.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       InAppUpdateService.checkForUpdate();
     });
@@ -107,23 +108,11 @@ class _MainAppState extends State<MainApp> {
           builder: (context, localeCode) {
             return MaterialApp(
               title: 'Tasbeh',
-              scaffoldMessengerKey: scaffoldMessengerKey,
+              navigatorKey: navigatorKey,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
               locale: Locale(localeCode),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.teal,
-                  brightness: Brightness.dark,
-                ),
-                scaffoldBackgroundColor: Colors.black,
-                appBarTheme: const AppBarTheme(
-                  backgroundColor: Colors.black,
-                  surfaceTintColor: Colors.black,
-                ),
-                iconTheme: const IconThemeData(size: 32, color: Colors.white),
-              ),
+              darkTheme: AppTheme.dark,
               themeMode: ThemeMode.dark,
               home: const CounterPage(),
             );

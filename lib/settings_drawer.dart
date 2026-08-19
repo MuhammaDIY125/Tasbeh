@@ -13,6 +13,9 @@ import 'vibration_cubit.dart';
 /// Панель живёт внутри `Scaffold` главного экрана, поэтому открытие настроек
 /// не создаёт новый маршрут и не трогает режим системных панелей — счётчик
 /// под ней остаётся на месте.
+///
+/// Настроек мало, и все они разные, поэтому список плоский: рамки и подписи
+/// групп добавляли бы структуру там, где её нечего структурировать.
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({super.key});
 
@@ -23,34 +26,45 @@ class SettingsDrawer extends StatelessWidget {
 
     return Drawer(
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 24),
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
               child: Text(
                 t.settingsTitle,
                 style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const Divider(height: 1),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.only(top: 8),
-                children: const [
-                  _LanguageSection(),
-                  _VibrationSection(),
-                  _ReminderSection(),
-                ],
-              ),
-            ),
+            const _LanguageSection(),
+            const _VibrationSection(),
+            const _ReminderSection(),
           ],
         ),
       ),
     );
   }
+}
+
+/// Текущее значение настройки справа от названия.
+///
+/// Намеренно тише самого названия: значение подсказывает состояние, но не
+/// должно спорить за внимание.
+class _ValueLabel extends StatelessWidget {
+  final String value;
+
+  const _ValueLabel(this.value);
+
+  @override
+  Widget build(BuildContext context) => Text(
+    value,
+    style: TextStyle(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      fontSize: 16,
+    ),
+  );
 }
 
 /// Выбор языка интерфейса.
@@ -60,20 +74,12 @@ class _LanguageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return BlocBuilder<LocaleCubit, String>(
       builder: (context, code) {
         return ListTile(
           title: Text(t.language),
-          trailing: Text(
-            _languageName(code),
-            style: TextStyle(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+          trailing: _ValueLabel(_languageName(code)),
           onTap: () => _showLanguagePicker(context, code),
         );
       },
@@ -92,24 +98,16 @@ class _LanguageSection extends StatelessWidget {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: theme.colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      showDragHandle: true,
       builder: (sheetContext) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  t.language,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
+                Text(t.language, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 12),
                 for (final code in const ['uz', 'ru', 'en'])
                   _LanguageTile(
                     name: _languageName(code),
@@ -119,7 +117,6 @@ class _LanguageSection extends StatelessWidget {
                       Navigator.pop(sheetContext);
                     },
                   ),
-                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -136,7 +133,6 @@ class _VibrationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return BlocBuilder<VibrationCubit, VibrationState>(
       builder: (context, vibration) {
@@ -145,7 +141,6 @@ class _VibrationSection extends StatelessWidget {
             SwitchListTile(
               title: Text(t.vibration),
               value: vibration.isEnabled,
-              activeThumbColor: colorScheme.primary,
               onChanged: (_) => context.read<VibrationCubit>().toggle(),
             ),
             if (vibration.isEnabled)
@@ -165,10 +160,9 @@ class _IntensitySlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -176,13 +170,7 @@ class _IntensitySlider extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(t.vibrationIntensity),
-              Text(
-                '${t.level} ${((intensity / 255) * 9).round() + 1}',
-                style: TextStyle(
-                  color: colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              _ValueLabel('${t.level} ${((intensity / 255) * 9).round() + 1}'),
             ],
           ),
           Slider(
@@ -190,7 +178,6 @@ class _IntensitySlider extends StatelessWidget {
             min: 1,
             max: 255,
             divisions: 9,
-            activeColor: colorScheme.primary,
             onChanged: (value) {
               final selected = value.toInt();
               context.read<VibrationCubit>().setIntensity(selected);
@@ -213,7 +200,6 @@ class _ReminderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return BlocBuilder<NotificationCubit, TimeOfDay?>(
       builder: (context, time) {
@@ -222,7 +208,6 @@ class _ReminderSection extends StatelessWidget {
             SwitchListTile(
               title: Text(t.dailyReminder),
               value: time != null,
-              activeThumbColor: colorScheme.primary,
               onChanged: (enabled) {
                 if (enabled) {
                   _pickTime(context);
@@ -234,14 +219,7 @@ class _ReminderSection extends StatelessWidget {
             if (time != null)
               ListTile(
                 title: Text(t.dailyReminderTime),
-                trailing: Text(
-                  time.format(context),
-                  style: TextStyle(
-                    color: colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                trailing: _ValueLabel(time.format(context)),
                 onTap: () => _pickTime(context, initialTime: time),
               ),
           ],
@@ -288,27 +266,9 @@ class _LanguageTile extends StatelessWidget {
     final theme = Theme.of(context);
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-      title: Text(
-        name,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? theme.colorScheme.primary : null,
-          fontSize: 16,
-        ),
-      ),
+      title: Text(name, style: const TextStyle(fontSize: 16)),
       trailing: isSelected
-          ? Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.check,
-                size: 16,
-                color: theme.colorScheme.primary,
-              ),
-            )
+          ? Icon(Icons.check, size: 20, color: theme.colorScheme.primary)
           : null,
       onTap: onTap,
     );

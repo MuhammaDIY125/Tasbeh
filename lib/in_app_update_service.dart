@@ -6,10 +6,9 @@ import 'package:in_app_update/in_app_update.dart';
 
 import 'l10n/app_localizations.dart';
 
-/// Ключ для доступа к `ScaffoldMessenger` из мест, где нет своего `context`
+/// Ключ для доступа к `Navigator` из мест, где нет своего `context`
 /// (например, из сервиса обновлений). Передаётся в `MaterialApp`.
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 /// Сервис обновления приложения через нативный механизм Google Play
 /// (Android In-App Updates).
@@ -58,25 +57,45 @@ class InAppUpdateService {
     }
   }
 
-  /// Показывает уведомление с предложением перезапустить приложение и применить
+  /// Показывает диалог с предложением перезапустить приложение и применить
   /// уже загруженное обновление.
   static void _promptRestart() {
-    final ScaffoldMessengerState? messenger = scaffoldMessengerKey.currentState;
-    final BuildContext? context = scaffoldMessengerKey.currentContext;
-    if (messenger == null || context == null) return;
+    final NavigatorState? navigator = navigatorKey.currentState;
+    if (navigator == null) return;
 
+    final BuildContext context = navigator.context;
     final AppLocalizations? t = AppLocalizations.of(context);
     if (t == null) return;
 
-    messenger.showSnackBar(
-      SnackBar(
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
         content: Text(t.updateReady),
-        duration: const Duration(days: 1),
-        action: SnackBarAction(
-          label: t.updateRestart,
-          onPressed: InAppUpdate.completeFlexibleUpdate,
-        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              _completeUpdate();
+            },
+            child: Text(t.updateRestart),
+          ),
+        ],
       ),
     );
+  }
+
+  /// Применяет уже загруженное обновление и перезапускает приложение.
+  ///
+  /// Google Play может отказать в установке (например, приложение поставлено
+  /// не из Play), поэтому ошибка гасится так же, как и при проверке обновлений.
+  static Future<void> _completeUpdate() async {
+    try {
+      await InAppUpdate.completeFlexibleUpdate();
+    } catch (e) {
+      log(
+        'InAppUpdateService: complete update failed: $e',
+        name: 'InAppUpdateService',
+      );
+    }
   }
 }
