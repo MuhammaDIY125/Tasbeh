@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -21,7 +23,13 @@ Future<void> main() async {
     storageDirectory: HydratedStorageDirectory(dir.path),
   );
 
-  await NotificationService.instance.initialize();
+  // Сбой инициализации уведомлений не должен мешать запуску: без runApp
+  // пользователь видит только чёрный экран.
+  try {
+    await NotificationService.instance.initialize();
+  } catch (e) {
+    log('main: notification init failed: $e', name: 'main');
+  }
 
   runApp(const MainApp());
 }

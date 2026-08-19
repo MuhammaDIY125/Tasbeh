@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Иконка статус-бара запрашивается по имени из Dart-кода, поэтому R8
+  не видит ссылку на неё в dex и вырезает ресурс из release-сборки.
+-->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_tasbeh" />
