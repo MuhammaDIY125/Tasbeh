@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vibration/vibration.dart';
 
 import 'app_theme.dart';
+import 'edge_glow.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
 import 'notification_cubit.dart';
@@ -25,11 +26,10 @@ class SettingsDrawer extends StatelessWidget {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    return CustomPaint(
-      // Свечение рисуется снаружи панели, поэтому и живёт снаружи `Drawer`:
-      // при заданном `shape` тот клипит Material по своей форме, и всё, что
-      // ушло бы за край, обрезалось бы вместе с содержимым.
-      foregroundPainter: const _DrawerEdgeGlow(),
+    return EdgeGlow(
+      borderRadius: const BorderRadius.horizontal(
+        right: Radius.circular(AppTheme.drawerCornerRadius),
+      ),
       child: Drawer(
         // Стандартные 304 dp оставляют полосу поверх счётчика; панель почти во
         // всю ширину читается как отдельный экран. Верхний предел нужен
@@ -285,58 +285,4 @@ class _LanguageTile extends StatelessWidget {
       onTap: onTap,
     );
   }
-}
-
-/// Свечение, уходящее от правого края панели наружу — на затемнённый экран.
-///
-/// Экран под панелью чёрный, поэтому глубину даёт не тень, а свет: силуэт
-/// панели размывается и всё, что попало внутрь её формы, отсекается. Наружу
-/// остаётся дымка, обтекающая скругления, — панель читается как лежащая
-/// поверх экрана, а не вырезанная в нём.
-class _DrawerEdgeGlow extends CustomPainter {
-  const _DrawerEdgeGlow();
-
-  /// Насколько далеко свечение уходит от края.
-  static const double _spread = 28;
-
-  static const double _radius = AppTheme.drawerCornerRadius;
-  static const Color _color = AppTheme.drawerGlow;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (size.isEmpty) return;
-
-    final panel = Path()
-      ..addRRect(
-        RRect.fromRectAndCorners(
-          Offset.zero & size,
-          topRight: const Radius.circular(_radius),
-          bottomRight: const Radius.circular(_radius),
-        ),
-      );
-
-    // Полоса от начала скруглений и наружу: у углов свечение должно заходить
-    // левее правого края, в выемку между кривой и краем панели.
-    final band = Path()
-      ..addRect(
-        Rect.fromLTWH(size.width - _radius, 0, _radius + _spread, size.height),
-      );
-
-    canvas.save();
-    canvas.clipPath(Path.combine(PathOperation.difference, band, panel));
-
-    // Два слоя: узкий и плотный держит саму кромку, широкий и слабый растворяет
-    // её в экране. Одним слоем получается либо линия, либо мутное пятно.
-    canvas.drawPath(panel, _glowPaint(alpha: 0.9, sigma: _spread / 6));
-    canvas.drawPath(panel, _glowPaint(alpha: 0.45, sigma: _spread / 2));
-
-    canvas.restore();
-  }
-
-  Paint _glowPaint({required double alpha, required double sigma}) => Paint()
-    ..color = _color.withValues(alpha: _color.a * alpha)
-    ..maskFilter = MaskFilter.blur(BlurStyle.normal, sigma);
-
-  @override
-  bool shouldRepaint(_DrawerEdgeGlow oldDelegate) => false;
 }
