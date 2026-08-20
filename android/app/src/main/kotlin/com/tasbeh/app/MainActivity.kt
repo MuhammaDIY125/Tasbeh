@@ -1,5 +1,9 @@
 package com.tasbeh.app
 
+import android.graphics.Color
+import android.os.Build
+import android.os.Bundle
+import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -16,6 +20,11 @@ import io.flutter.plugin.common.MethodChannel
  */
 class MainActivity : FlutterActivity() {
     private var isStatusBarHidden = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        drawEdgeToEdge()
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -43,6 +52,43 @@ class MainActivity : FlutterActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus && isStatusBarHidden) setStatusBarHidden(true)
+    }
+
+    /**
+     * Растягивает окно под системные панели.
+     *
+     * До Android 15 система сама отступает от статус-бара, и всё приложение —
+     * вместе с панелью настроек — начинается уже под ним. Панель должна уходить
+     * за статус-бар целиком, поэтому отступы отдаём содержимому: их держат
+     * `SafeArea` внутри экрана счёта и панели.
+     */
+    private fun drawEdgeToEdge() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        // Цвета и флаг фона панелей на API 35+ уже не действуют: там панели
+        // всегда прозрачные, а окно и так edge-to-edge.
+        @Suppress("DEPRECATION")
+        window.apply {
+            // Без этого флага систему рисует панели непрозрачными, и содержимое
+            // за ними не видно, как бы далеко окно ни растянулось.
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            statusBarColor = Color.TRANSPARENT
+            navigationBarColor = Color.TRANSPARENT
+
+            // Иначе система подкладывает под панели свою полупрозрачную заливку,
+            // и края экрана выглядят светлее чёрного фона приложения.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                isStatusBarContrastEnforced = false
+                isNavigationBarContrastEnforced = false
+            }
+        }
+
+        // Приложение всегда тёмное, значки панелей поверх него должны быть
+        // светлыми — независимо от темы системы.
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
     }
 
     private fun setStatusBarHidden(hidden: Boolean) {
