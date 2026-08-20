@@ -20,6 +20,14 @@ class AppTheme {
   /// Обводка карточек и разделители внутри них.
   static const Color hairline = Color(0x1AFFFFFF);
 
+  /// Скругление правого края панели настроек. Константа общая: по ней же
+  /// строится свечение снаружи панели в `SettingsDrawer`, и разойдись они —
+  /// дымка перестала бы обтекать углы.
+  static const double drawerCornerRadius = 24;
+
+  /// Свечение, уходящее от края панели наружу, на затемнённый экран.
+  static const Color drawerGlow = Color(0x33FFFFFF);
+
   static final ColorScheme _colorScheme =
       ColorScheme.fromSeed(
         seedColor: Colors.teal,
@@ -49,14 +57,19 @@ class AppTheme {
     iconTheme: const IconThemeData(size: 32, color: Colors.white),
 
     // Панель настроек чёрная, как и экран под ней, поэтому отделяет её не
-    // подложка, а скруглённый край с тонкой гранью справа. Затемнение усилено,
-    // чтобы белые цифры счётчика не просвечивали сквозь него.
+    // подложка и не обводка, а скруглённый край со свечением снаружи — его
+    // рисует сам `SettingsDrawer`, потому что `shape` клипится Material'ом.
+    // Затемнение усилено, чтобы белые цифры счётчика не просвечивали сквозь.
     drawerTheme: const DrawerThemeData(
       backgroundColor: Colors.black,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrimColor: Color(0xCC000000),
-      shape: _DrawerBorder(color: hairline),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(
+          right: Radius.circular(drawerCornerRadius),
+        ),
+      ),
     ),
 
     dividerTheme: const DividerThemeData(
@@ -107,68 +120,4 @@ class AppTheme {
       trackOutlineColor: const WidgetStatePropertyAll<Color>(Color(0xFF3D3D3D)),
     ),
   );
-}
-
-/// Граница панели настроек: скруглённый правый край и грань только справа.
-///
-/// `RoundedRectangleBorder` со `side` обводит фигуру по всему периметру, и
-/// панель поверх чёрного экрана читалась как прямоугольная карточка. Контур
-/// фигуры здесь прежний, но красится лишь правая сторона — единственная, что
-/// отделяет панель от экрана под ней; остальные упираются в края экрана.
-class _DrawerBorder extends ShapeBorder {
-  final Color color;
-  final double radius;
-  final double width;
-
-  const _DrawerBorder({required this.color, this.radius = 24, this.width = 1});
-
-  BorderRadius get _borderRadius =>
-      BorderRadius.horizontal(right: Radius.circular(radius));
-
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.only(right: width);
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) =>
-      Path()..addRRect(_borderRadius.toRRect(rect));
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
-      Path()..addRRect(_borderRadius.toRRect(rect).deflate(width));
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    // Штрих ложится по центру линии, поэтому контур сдвинут внутрь на половину
-    // толщины — иначе половина грани оказалась бы за краем панели.
-    final edge = rect.deflate(width / 2);
-    final corner = Radius.circular((radius - width / 2).clamp(0.0, radius));
-
-    final path = Path()
-      ..moveTo(edge.right - corner.x, edge.top)
-      ..arcToPoint(Offset(edge.right, edge.top + corner.y), radius: corner)
-      ..lineTo(edge.right, edge.bottom - corner.y)
-      ..arcToPoint(Offset(edge.right - corner.x, edge.bottom), radius: corner);
-
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = width,
-    );
-  }
-
-  @override
-  ShapeBorder scale(double t) =>
-      _DrawerBorder(color: color, radius: radius * t, width: width * t);
-
-  @override
-  bool operator ==(Object other) =>
-      other is _DrawerBorder &&
-      other.color == color &&
-      other.radius == radius &&
-      other.width == width;
-
-  @override
-  int get hashCode => Object.hash(color, radius, width);
 }

@@ -54,6 +54,8 @@ android {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // `WindowInsetsControllerCompat` для управления статус-баром в MainActivity.
+    implementation("androidx.core:core-ktx:1.15.0")
 }
 
 flutter {

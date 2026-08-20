@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'counter_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'settings_drawer.dart';
+import 'system_bars.dart';
 import 'vibration_cubit.dart';
 
 class CounterPage extends StatefulWidget {
@@ -36,18 +36,15 @@ class _CounterPageState extends State<CounterPage> {
     super.dispose();
   }
 
-  /// Прячет верхнюю системную панель и удерживает экран включённым:
-  /// зикр можно читать долго, не касаясь экрана.
+  /// Прячет статус-бар и удерживает экран включённым: зикр можно читать долго,
+  /// не касаясь экрана.
   void _enterCountingMode() {
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: const [SystemUiOverlay.bottom],
-    );
+    SystemBars.hideStatusBar();
     WakelockPlus.enable();
   }
 
   void _exitCountingMode() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemBars.showStatusBar();
     WakelockPlus.disable();
   }
 
