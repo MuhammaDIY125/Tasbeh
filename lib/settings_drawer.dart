@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vibration/vibration.dart';
 
 import 'app_theme.dart';
@@ -37,24 +38,70 @@ class SettingsDrawer extends StatelessWidget {
         // ширину.
         width: (MediaQuery.sizeOf(context).width * 0.86).clamp(304.0, 400.0),
         child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+          // Версия прибита к низу панели, а не к концу списка: список короткий,
+          // и в конце текста она читалась бы как ещё один пункт настроек.
+          child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-                child: Text(
-                  t.settingsTitle,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                      child: Text(
+                        t.settingsTitle,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const _LanguageSection(),
+                    const _VibrationSection(),
+                    const _ReminderSection(),
+                  ],
                 ),
               ),
-              const _LanguageSection(),
-              const _VibrationSection(),
-              const _ReminderSection(),
+              const _AppVersion(),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Версия приложения по центру нижнего края панели.
+///
+/// Номер берётся у платформы, а не из константы в коде: так он не разъезжается
+/// с `version:` в pubspec при выпуске новой сборки.
+class _AppVersion extends StatelessWidget {
+  const _AppVersion();
+
+  /// Читается один раз за запуск: панель открывают часто, а версия за это
+  /// время не меняется.
+  static final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: FutureBuilder<PackageInfo>(
+        future: _packageInfo,
+        builder: (context, snapshot) {
+          final version = snapshot.data?.version;
+
+          // Пока версия не пришла, место под неё держит пустой текст: иначе
+          // список настроек дёргался бы вниз в первый кадр после открытия.
+          return Text(
+            version == null ? '' : 'v$version',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          );
+        },
       ),
     );
   }

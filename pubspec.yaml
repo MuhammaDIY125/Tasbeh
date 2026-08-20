@@ -24,6 +24,7 @@ dependencies:
   vibration: ^3.1.8
   in_app_update: ^5.0.0
   wakelock_plus: ^1.7.0
+  package_info_plus: ^10.2.1
 
 dev_dependencies:
   flutter_test:
