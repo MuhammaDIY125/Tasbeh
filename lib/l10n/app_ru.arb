@@ -5,7 +5,6 @@
   "vibrationIntensity": "Сила вибрации",
   "level": "Уровень",
   "language": "Язык",
-  "resetConfirmationTitle": "Сбросить счётчик?",
   "resetConfirmationMessage": "Вы уверены, что хотите обнулить счётчик?",
   "cancel": "Отмена",
   "reset": "Сброс",

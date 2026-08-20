@@ -24,9 +24,6 @@ class AppLocalizationsUz extends AppLocalizations {
   String get language => 'Til';
 
   @override
-  String get resetConfirmationTitle => 'Hisoblagichni tiklash?';
-
-  @override
   String get resetConfirmationMessage => 'Hisoblagichni nolga tushirishga aminmisiz?';
 
   @override

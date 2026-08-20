@@ -124,7 +124,6 @@ class _CounterPageState extends State<CounterPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(t.resetConfirmationTitle),
           content: Text(t.resetConfirmationMessage),
           actions: [
             TextButton(

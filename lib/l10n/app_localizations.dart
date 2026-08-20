@@ -127,12 +127,6 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
-  /// No description provided for @resetConfirmationTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset counter?'**
-  String get resetConfirmationTitle;
-
   /// No description provided for @resetConfirmationMessage.
   ///
   /// In en, this message translates to:
