@@ -25,6 +25,10 @@ class SettingsDrawer extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Drawer(
+      // Стандартные 304 dp оставляют полосу поверх счётчика; панель почти во
+      // всю ширину читается как отдельный экран. Верхний предел нужен планшетам,
+      // где доля экрана растянула бы список настроек через всю ширину.
+      width: (MediaQuery.sizeOf(context).width * 0.86).clamp(304.0, 400.0),
       child: SafeArea(
         child: ListView(
           padding: const EdgeInsets.only(bottom: 24),
