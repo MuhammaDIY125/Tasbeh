@@ -2,7 +2,7 @@ name: tasbeh
 description: "Счётчик тасбиха: зикр с вибрацией и ежедневным напоминанием."
 publish_to: 'none'
 
-version: 1.0.0+10
+version: 1.0.0+11
 
 environment:
   sdk: ^3.10.4
