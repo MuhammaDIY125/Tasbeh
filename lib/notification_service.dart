@@ -25,9 +25,6 @@ class NotificationService {
   /// по альфа-каналу, поэтому непрозрачный логотип превращался
   /// в белый квадрат. Генерируется `tool/generate_notification_icon.py`.
   static const _statusBarIcon = 'ic_stat_tasbeh';
-  static const _largeIcon = DrawableResourceAndroidBitmap(
-    '@mipmap/ic_launcher',
-  );
 
   /// Инициализирует плагин.
   Future<void> initialize() async {
@@ -198,7 +195,6 @@ class NotificationService {
         channelName,
         channelDescription: channelDescription,
         icon: _statusBarIcon,
-        largeIcon: _largeIcon,
         importance: Importance.high,
         priority: Priority.high,
         showWhen: true,
