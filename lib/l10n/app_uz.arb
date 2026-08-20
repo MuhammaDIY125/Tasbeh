@@ -12,7 +12,7 @@
   "dailyReminder": "Kunlik eslatma",
   "reminderTime": "Eslatma vaqti",
   "notificationTitle": "Tasbeh vaqti",
-  "notificationBody": "Kunlik zikringizni unutmang — bir tasbeh o‘qib qo‘ying.",
+  "notificationBody": "Kunlik zikringizni unutmang",
   "notificationChannelName": "Kunlik eslatma",
   "notificationChannelDescription": "Har kuni belgilangan vaqtda tasbeh haqida eslatma",
   "updateReady": "Yangilanish yuklab olindi",
