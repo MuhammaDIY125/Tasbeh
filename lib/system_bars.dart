@@ -3,14 +3,50 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
-/// Управляет видимостью статус-бара.
+/// Управляет системными панелями: режимом окна и видимостью статус-бара.
 ///
-/// На Android идёт в нативный `WindowInsetsController`: приложения с
+/// Видимость на Android идёт в нативный `WindowInsetsController`: приложения с
 /// targetSdk 35+ всегда рисуются edge-to-edge, и система игнорирует
 /// [SystemChrome.setEnabledSystemUIMode] с любым режимом, кроме
 /// [SystemUiMode.edgeToEdge]. На остальных платформах хватает Flutter API.
 abstract final class SystemBars {
   static const _channel = MethodChannel('com.tasbeh.app/system_bars');
+
+  /// Растягивает приложение под системные панели и делает сами панели
+  /// прозрачными.
+  ///
+  /// Движок Flutter держит собственный режим системных панелей и переприменяет
+  /// его на каждом `onPostResume`. Пока он не знает про edge-to-edge, он кладёт
+  /// в окно свой набор устаревших `View.SYSTEM_UI_FLAG_*` поверх настройки
+  /// `MainActivity`. Переключить режим можно только отсюда — и только в
+  /// [SystemUiMode.edgeToEdge]: остальные режимы движок edge-to-edge не
+  /// восстанавливает.
+  ///
+  /// Вызывать до `runApp`: стиль панелей уходит в систему после первого кадра,
+  /// и заданный раньше он успевает к нему.
+  static Future<void> applyEdgeToEdge() async {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0x00000000),
+        systemNavigationBarColor: Color(0x00000000),
+        systemNavigationBarDividerColor: Color(0x00000000),
+
+        // Android 10+ подкладывает под прозрачные панели свою полупрозрачную
+        // заливку — ради контраста с кнопками навигации. На чёрном фоне
+        // приложения она видна как серая полоса вдоль края экрана.
+        systemStatusBarContrastEnforced: false,
+        systemNavigationBarContrastEnforced: false,
+
+        // Приложение всегда тёмное, значки панелей поверх него должны быть
+        // светлыми — независимо от темы системы.
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+    );
+  }
 
   /// Прячет статус-бар, оставляя нижнюю панель навигации на месте.
   static Future<void> hideStatusBar() => _apply(

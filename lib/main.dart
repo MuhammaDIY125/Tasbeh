@@ -13,10 +13,13 @@ import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
 import 'notification_cubit.dart';
 import 'notification_service.dart';
+import 'system_bars.dart';
 import 'vibration_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemBars.applyEdgeToEdge();
 
   final dir = await getApplicationDocumentsDirectory();
 
