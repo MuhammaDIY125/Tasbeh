@@ -161,11 +161,19 @@ class _LanguageSection extends StatelessWidget {
       builder: (sheetContext) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: AppTheme.popupPadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(t.language, style: theme.textTheme.titleMedium),
+                // Заголовок отбит от краёв так же, как пункты ниже: сам по
+                // себе он стоит по центру, но длинное название языка на узком
+                // экране иначе упёрлось бы в край листа.
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.popupPadding,
+                  ),
+                  child: Text(t.language, style: theme.textTheme.titleMedium),
+                ),
                 const SizedBox(height: 12),
                 for (final code in const ['uz', 'ru', 'en'])
                   _LanguageTile(
@@ -324,7 +332,9 @@ class _LanguageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.popupPadding,
+      ),
       title: Text(name, style: const TextStyle(fontSize: 16)),
       trailing: isSelected
           ? Icon(Icons.check, size: 20, color: theme.colorScheme.primary)

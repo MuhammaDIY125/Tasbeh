@@ -29,6 +29,17 @@ class AppTheme {
   /// дымка перестала бы обтекать углы.
   static const double drawerCornerRadius = 24;
 
+  /// Отступ от края всплывающей поверхности до её содержимого. Диалоги,
+  /// нижние листы и выбор времени держат один и тот же: окна открываются из
+  /// одного места, и разные поля выдавали бы их как собранные по разным
+  /// правилам.
+  static const double popupPadding = 24;
+
+  /// Поля диалога вокруг текста. Приходится задавать каждому `AlertDialog`
+  /// вручную: `DialogThemeData` из всех отступов знает только `actionsPadding`,
+  /// а собственное умолчание `AlertDialog` сверху уже 16, а не 24.
+  static const EdgeInsets dialogContentPadding = EdgeInsets.all(popupPadding);
+
   /// Скругление всплывающих поверхностей — диалогов и нижних листов.
   static const BorderRadius dialogRadius = BorderRadius.all(
     Radius.circular(20),
@@ -99,6 +110,18 @@ class AppTheme {
       surfaceTintColor: Colors.transparent,
       contentTextStyle: TextStyle(color: _colorScheme.onSurface, fontSize: 16),
       shape: const EdgeGlowBorder(borderRadius: dialogRadius),
+
+      // TextButton держит вокруг подписи собственные поля — 12 dp по бокам и
+      // 10 dp сверху и снизу (подпись высотой 20 растянута до минимальной
+      // высоты кнопки в 40). Ряд кнопок отодвинут от края ровно на столько
+      // меньше: иначе подписи стоят дальше от края, чем текст над ними, и
+      // правый край диалога выглядит просторнее левого.
+      actionsPadding: const EdgeInsets.fromLTRB(
+        popupPadding - 12,
+        0,
+        popupPadding - 12,
+        popupPadding - 10,
+      ),
     ),
 
     bottomSheetTheme: const BottomSheetThemeData(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'app_theme.dart';
 import 'counter_cubit.dart';
 import 'l10n/app_localizations.dart';
 import 'settings_drawer.dart';
@@ -124,6 +125,7 @@ class _CounterPageState extends State<CounterPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          contentPadding: AppTheme.dialogContentPadding,
           content: Text(t.resetConfirmationMessage),
           actions: [
             TextButton(

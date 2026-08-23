@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 
+import 'app_theme.dart';
 import 'l10n/app_localizations.dart';
 
 /// Ключ для доступа к `Navigator` из мест, где нет своего `context`
@@ -70,6 +71,7 @@ class InAppUpdateService {
     showDialog<void>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
+        contentPadding: AppTheme.dialogContentPadding,
         content: Text(t.updateReady),
         actions: <Widget>[
           TextButton(
