@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_update/in_app_update.dart';
 
@@ -25,7 +26,10 @@ class InAppUpdateService {
   ///
   /// Работает только на Android — In-App Updates это API Google Play.
   static Future<void> checkForUpdate() async {
-    if (!Platform.isAndroid) return;
+    // В debug-сборках приложение не установлено через Google Play, и
+    // Play Services может подолгу висеть в ожидании ответа (особенно на
+    // эмуляторах без залогиненного Play Store) — проверка тут бессмысленна.
+    if (kDebugMode || !Platform.isAndroid) return;
 
     try {
       final AppUpdateInfo info = await InAppUpdate.checkForUpdate();
