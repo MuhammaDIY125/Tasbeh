@@ -110,6 +110,7 @@ class _MainAppState extends State<MainApp> {
         child: BlocBuilder<LocaleCubit, String>(
           builder: (context, localeCode) {
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Tasbeh',
               navigatorKey: navigatorKey,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
