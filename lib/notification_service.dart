@@ -203,6 +203,10 @@ class NotificationService {
         category: AndroidNotificationCategory.reminder,
         visibility: NotificationVisibility.public,
         styleInformation: BigTextStyleInformation(body, contentTitle: title),
+        // Кружок под маленькой иконкой в шторке уведомлений: без этого
+        // Android красит его акцентным цветом темы устройства.
+        color: Colors.black,
+        colorized: false,
       );
 
       const iosDetails = DarwinNotificationDetails(
