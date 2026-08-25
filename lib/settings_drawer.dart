@@ -267,32 +267,30 @@ class _IntensitySlider extends StatelessWidget {
 class _ReminderSection extends StatelessWidget {
   const _ReminderSection();
 
-  static const _defaultTime = TimeOfDay(hour: 6, minute: 0);
-
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
 
-    return BlocBuilder<NotificationCubit, TimeOfDay?>(
-      builder: (context, time) {
+    return BlocBuilder<NotificationCubit, NotificationState>(
+      builder: (context, notification) {
         return Column(
           children: [
             SwitchListTile(
               title: Text(t.dailyReminder),
-              value: time != null,
+              value: notification.isEnabled,
               onChanged: (enabled) {
                 if (enabled) {
-                  _pickTime(context);
+                  _pickTime(context, initialTime: notification.time);
                 } else {
                   context.read<NotificationCubit>().disable();
                 }
               },
             ),
-            if (time != null)
+            if (notification.isEnabled)
               ListTile(
                 title: Text(t.reminderTime),
-                trailing: _ValueLabel(time.format(context)),
-                onTap: () => _pickTime(context, initialTime: time),
+                trailing: _ValueLabel(notification.time.format(context)),
+                onTap: () => _pickTime(context, initialTime: notification.time),
               ),
           ],
         );
@@ -304,7 +302,10 @@ class _ReminderSection extends StatelessWidget {
   ///
   /// Само уведомление планирует слушатель `NotificationCubit` в `MainApp` —
   /// так время и язык напоминания всегда пересобираются из одного места.
-  Future<void> _pickTime(BuildContext context, {TimeOfDay? initialTime}) async {
+  Future<void> _pickTime(
+    BuildContext context, {
+    required TimeOfDay initialTime,
+  }) async {
     final t = AppLocalizations.of(context)!;
     final notificationCubit = context.read<NotificationCubit>();
 
@@ -313,7 +314,7 @@ class _ReminderSection extends StatelessWidget {
 
     final selectedTime = await showTimePicker(
       context: context,
-      initialTime: initialTime ?? _defaultTime,
+      initialTime: initialTime,
       helpText: t.reminderTime,
     );
     if (selectedTime == null) return;

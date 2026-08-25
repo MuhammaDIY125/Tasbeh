@@ -1,25 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-/// Хранит и персистирует время ежедневного напоминания.
+/// Состояние напоминания, включающее статус и время.
 ///
-/// Состояние `null` означает, что уведомления отключены.
-class NotificationCubit extends HydratedCubit<TimeOfDay?> {
-  NotificationCubit() : super(null);
+/// `time` хранится и при выключенном напоминании: так повторное включение
+/// открывает выбор времени с последним выбранным значением, а не со сбитым
+/// дефолтом.
+class NotificationState {
+  final bool isEnabled;
+  final TimeOfDay time;
 
-  void setTime(TimeOfDay time) => emit(time);
+  const NotificationState({required this.isEnabled, required this.time});
 
-  void disable() => emit(null);
+  NotificationState copyWith({bool? isEnabled, TimeOfDay? time}) {
+    return NotificationState(
+      isEnabled: isEnabled ?? this.isEnabled,
+      time: time ?? this.time,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'isEnabled': isEnabled,
+    'hour': time.hour,
+    'minute': time.minute,
+  };
+
+  factory NotificationState.fromJson(Map<String, dynamic> json) {
+    return NotificationState(
+      isEnabled: json['isEnabled'] as bool? ?? false,
+      time: TimeOfDay(
+        hour: json['hour'] as int? ?? 6,
+        minute: json['minute'] as int? ?? 0,
+      ),
+    );
+  }
+}
+
+/// Хранит и персистирует время ежедневного напоминания.
+class NotificationCubit extends HydratedCubit<NotificationState> {
+  NotificationCubit()
+    : super(
+        const NotificationState(
+          isEnabled: false,
+          time: TimeOfDay(hour: 6, minute: 0),
+        ),
+      );
+
+  void setTime(TimeOfDay time) =>
+      emit(state.copyWith(isEnabled: true, time: time));
+
+  void disable() => emit(state.copyWith(isEnabled: false));
 
   @override
-  TimeOfDay? fromJson(Map<String, dynamic> json) {
-    if (json['hour'] == null || json['minute'] == null) return null;
-    return TimeOfDay(hour: json['hour'] as int, minute: json['minute'] as int);
+  NotificationState? fromJson(Map<String, dynamic> json) {
+    // Поддержка старого формата, где состояние было просто `TimeOfDay?`.
+    if (json.containsKey('isEnabled')) return NotificationState.fromJson(json);
+
+    if (json['hour'] == null || json['minute'] == null) {
+      return const NotificationState(
+        isEnabled: false,
+        time: TimeOfDay(hour: 6, minute: 0),
+      );
+    }
+    return NotificationState(
+      isEnabled: true,
+      time: TimeOfDay(hour: json['hour'] as int, minute: json['minute'] as int),
+    );
   }
 
   @override
-  Map<String, dynamic>? toJson(TimeOfDay? state) {
-    if (state == null) return {'hour': null, 'minute': null};
-    return {'hour': state.hour, 'minute': state.minute};
-  }
+  Map<String, dynamic>? toJson(NotificationState state) => state.toJson();
 }

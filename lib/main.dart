@@ -39,22 +39,22 @@ Future<void> main() async {
 }
 
 /// Планирует ежедневное напоминание на языке `localeCode` либо отменяет его,
-/// если время не задано.
+/// если оно выключено.
 ///
 /// Локализации берутся напрямую у делегата: слушатели живут выше
 /// `MaterialApp`, поэтому `AppLocalizations.of(context)` здесь вернул бы null.
 Future<void> _syncReminder({
   required String localeCode,
-  required TimeOfDay? time,
+  required NotificationState notification,
 }) async {
-  if (time == null) {
+  if (!notification.isEnabled) {
     await NotificationService.instance.cancelDailyReminder();
     return;
   }
 
   final t = await AppLocalizations.delegate.load(Locale(localeCode));
   await NotificationService.instance.scheduleDailyReminder(
-    time: time,
+    time: notification.time,
     title: t.notificationTitle,
     body: t.notificationBody,
     channelName: t.notificationChannelName,
@@ -92,10 +92,10 @@ class _MainAppState extends State<MainApp> {
       ],
       child: MultiBlocListener(
         listeners: [
-          BlocListener<NotificationCubit, TimeOfDay?>(
-            listener: (context, time) => _syncReminder(
+          BlocListener<NotificationCubit, NotificationState>(
+            listener: (context, notification) => _syncReminder(
               localeCode: context.read<LocaleCubit>().state,
-              time: time,
+              notification: notification,
             ),
           ),
           // Тексты уведомления фиксируются в момент планирования, поэтому
@@ -103,7 +103,7 @@ class _MainAppState extends State<MainApp> {
           BlocListener<LocaleCubit, String>(
             listener: (context, localeCode) => _syncReminder(
               localeCode: localeCode,
-              time: context.read<NotificationCubit>().state,
+              notification: context.read<NotificationCubit>().state,
             ),
           ),
         ],
