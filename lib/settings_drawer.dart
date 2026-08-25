@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 
 import 'app_theme.dart';
@@ -18,7 +19,9 @@ import 'vibration_cubit.dart';
 /// под ней остаётся на месте.
 ///
 /// Настроек мало, и все они разные, поэтому список плоский: рамки и подписи
-/// групп добавляли бы структуру там, где её нечего структурировать.
+/// групп добавляли бы структуру там, где её нечего структурировать. Исключение
+/// — "Поделиться" внизу: это не настройка, а действие, и `Divider` отделяет
+/// его от них, чтобы не читалось как ещё один переключатель.
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({super.key});
 
@@ -58,6 +61,8 @@ class SettingsDrawer extends StatelessWidget {
                     const _LanguageSection(),
                     const _VibrationSection(),
                     const _ReminderSection(),
+                    const Divider(),
+                    const _ShareSection(),
                   ],
                 ),
               ),
@@ -262,7 +267,7 @@ class _IntensitySlider extends StatelessWidget {
 class _ReminderSection extends StatelessWidget {
   const _ReminderSection();
 
-  static const _defaultTime = TimeOfDay(hour: 20, minute: 0);
+  static const _defaultTime = TimeOfDay(hour: 6, minute: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -314,6 +319,39 @@ class _ReminderSection extends StatelessWidget {
     if (selectedTime == null) return;
 
     notificationCubit.setTime(selectedTime);
+  }
+}
+
+/// Пункт "Поделиться приложением" — отправляет ссылку на Google Play.
+class _ShareSection extends StatelessWidget {
+  const _ShareSection();
+
+  static const _playStoreUrl =
+      'https://play.google.com/store/apps/details?id=com.tasbeh.app';
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return ListTile(title: Text(t.shareApp), onTap: () => _share(context));
+  }
+
+  // iPad требует `sharePositionOrigin` для листа "Поделиться" — без него
+  // вызов падает с исключением. Центр экрана — универсальный якорь, раз у
+  // пункта настроек нет своей кнопки, от которой лист мог бы выезжать.
+  Future<void> _share(BuildContext context) async {
+    final box = context.findRenderObject() as RenderBox;
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: 'Tasbeh\n\n$_playStoreUrl',
+        sharePositionOrigin: Rect.fromCenter(
+          center: box.size.center(Offset.zero),
+          width: 1,
+          height: 1,
+        ),
+      ),
+    );
   }
 }
 

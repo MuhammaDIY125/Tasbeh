@@ -5,6 +5,7 @@
   "vibrationIntensity": "Vibration intensity",
   "level": "Level",
   "language": "Language",
+  "shareApp": "Share app",
   "resetConfirmationMessage": "Are you sure you want to reset the counter to zero?",
   "cancel": "Cancel",
   "reset": "Reset",

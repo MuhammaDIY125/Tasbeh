@@ -5,6 +5,7 @@
   "vibrationIntensity": "Сила вибрации",
   "level": "Уровень",
   "language": "Язык",
+  "shareApp": "Поделиться приложением",
   "resetConfirmationMessage": "Вы уверены, что хотите обнулить счётчик?",
   "cancel": "Отмена",
   "reset": "Сброс",

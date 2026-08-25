@@ -24,6 +24,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get shareApp => 'Share app';
+
+  @override
   String get resetConfirmationMessage => 'Are you sure you want to reset the counter to zero?';
 
   @override

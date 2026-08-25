@@ -24,6 +24,9 @@ class AppLocalizationsUz extends AppLocalizations {
   String get language => 'Til';
 
   @override
+  String get shareApp => 'Ilovani ulashish';
+
+  @override
   String get resetConfirmationMessage => 'Hisoblagichni nolga tushirishga aminmisiz?';
 
   @override

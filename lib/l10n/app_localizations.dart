@@ -127,6 +127,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @shareApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Share app'**
+  String get shareApp;
+
   /// No description provided for @resetConfirmationMessage.
   ///
   /// In en, this message translates to:

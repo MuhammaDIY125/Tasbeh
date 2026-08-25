@@ -24,6 +24,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get language => 'Язык';
 
   @override
+  String get shareApp => 'Поделиться приложением';
+
+  @override
   String get resetConfirmationMessage => 'Вы уверены, что хотите обнулить счётчик?';
 
   @override
