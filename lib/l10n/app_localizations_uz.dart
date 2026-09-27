@@ -24,6 +24,42 @@ class AppLocalizationsUz extends AppLocalizations {
   String get language => 'Til';
 
   @override
+  String get theme => 'Mavzu';
+
+  @override
+  String get chooseThemeTitle => 'Mavzuni tanlang';
+
+  @override
+  String get chooseThemeHint => 'Uni istalgan vaqtda sozlamalarda o‘zgartirish mumkin';
+
+  @override
+  String get start => 'Boshlash';
+
+  @override
+  String get themeBlack => 'Qora';
+
+  @override
+  String get themeGraphite => 'Grafit';
+
+  @override
+  String get themeMidnight => 'Yarim tun';
+
+  @override
+  String get themeEmerald => 'Zumrad';
+
+  @override
+  String get themePomegranate => 'Anor';
+
+  @override
+  String get themeWhite => 'Oq';
+
+  @override
+  String get themeSand => 'Qum';
+
+  @override
+  String get themeSage => 'Marmarak';
+
+  @override
   String get shareApp => 'Ilovani ulashish';
 
   @override

@@ -24,6 +24,42 @@ class AppLocalizationsRu extends AppLocalizations {
   String get language => 'Язык';
 
   @override
+  String get theme => 'Тема';
+
+  @override
+  String get chooseThemeTitle => 'Выберите тему';
+
+  @override
+  String get chooseThemeHint => 'Её всегда можно сменить в настройках';
+
+  @override
+  String get start => 'Начать';
+
+  @override
+  String get themeBlack => 'Чёрный';
+
+  @override
+  String get themeGraphite => 'Графит';
+
+  @override
+  String get themeMidnight => 'Полночь';
+
+  @override
+  String get themeEmerald => 'Изумруд';
+
+  @override
+  String get themePomegranate => 'Гранат';
+
+  @override
+  String get themeWhite => 'Белый';
+
+  @override
+  String get themeSand => 'Песок';
+
+  @override
+  String get themeSage => 'Шалфей';
+
+  @override
   String get shareApp => 'Поделиться приложением';
 
   @override

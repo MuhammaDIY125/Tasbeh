@@ -12,7 +12,8 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * Прячет статус-бар через `WindowInsetsController`.
+ * Прячет статус-бар через `WindowInsetsController` и переключает значок
+ * приложения под тему.
  *
  * `SystemChrome.setEnabledSystemUIMode` из Flutter опирается на устаревшие
  * `View.SYSTEM_UI_FLAG_*`, а Android 15 (API 35) и новее их игнорирует:
@@ -20,6 +21,13 @@ import io.flutter.plugin.common.MethodChannel
  */
 class MainActivity : FlutterActivity() {
     private var isStatusBarHidden = false
+
+    private val launcherIcon by lazy { LauncherIcon(this) }
+
+    // Яркость фона текущей темы приложения. Живёт здесь, а не только во
+    // Flutter: значки панелей перекрашиваются заново при каждом возврате
+    // фокуса, и без неё на светлой теме они снова становились бы белыми.
+    private var hasLightBackground = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +50,31 @@ class MainActivity : FlutterActivity() {
                         result.success(null)
                     }
 
+                    "setLightBackground" -> {
+                        hasLightBackground = call.arguments as? Boolean ?: false
+                        drawEdgeToEdge()
+                        result.success(null)
+                    }
+
                     else -> result.notImplemented()
                 }
             }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ICON_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                val palette = call.arguments as? String
+                if (call.method != "setIcon" || palette == null) {
+                    result.notImplemented()
+                    return@setMethodCallHandler
+                }
+                launcherIcon.request(palette)
+                result.success(null)
+            }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        launcherIcon.applyPending()
     }
 
     // Получая фокус, окно теряет оформление системных панелей: их цвет
@@ -90,11 +120,11 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-        // Приложение всегда тёмное, значки панелей поверх него должны быть
-        // светлыми — независимо от темы системы.
+        // Значки панелей следуют теме приложения, а не системы: светлые на
+        // тёмном фоне, тёмные на светлом.
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false
-            isAppearanceLightNavigationBars = false
+            isAppearanceLightStatusBars = hasLightBackground
+            isAppearanceLightNavigationBars = hasLightBackground
         }
     }
 
@@ -118,5 +148,6 @@ class MainActivity : FlutterActivity() {
 
     private companion object {
         const val CHANNEL = "com.tasbeh.app/system_bars"
+        const val ICON_CHANNEL = "com.tasbeh.app/app_icon"
     }
 }

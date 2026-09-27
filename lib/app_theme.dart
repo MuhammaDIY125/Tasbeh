@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 
 import 'edge_glow.dart';
+import 'theme_cubit.dart';
 
-/// Тёмная тема приложения.
+/// Тема приложения в цветах выбранной [ThemePalette] — тёмная или светлая
+/// по яркости её фона.
 ///
-/// Экран счётчика полностью чёрный, поэтому surface-роли схемы переопределены
-/// на нейтральный near-black: сгенерированные из бирюзового seed'а оттенки
-/// уходят в зелень (`surfaceContainerLow` — `#161D1C`) и поверх чёрного фона
-/// читаются как посторонняя серо-зелёная плита.
+/// Все поверхности — панель настроек, листы, диалоги — строятся от фона
+/// темы, а не от seed'а: сгенерированные из акцента оттенки тянутся за ним
+/// (у бирюзы `surfaceContainerLow` — `#161D1C`) и поверх фона читались бы
+/// как посторонняя плита другого цвета. Поверхность на ступень выше — это фон
+/// темы под полупрозрачной вуалью цвета текста: на тёмной теме чуть светлее
+/// фона, на светлой чуть темнее, и в обоих случаях в оттенке самой темы.
 ///
-/// Сам акцент тоже приглушён: сгенерированная из seed'а бирюза `#82D5C8`
-/// слишком звонкая для приложения, которое должно оставаться фоном для зикра,
-/// а не притягивать взгляд.
+/// Акцент тоже не берётся из seed'а: сгенерированный `primary` (у бирюзы —
+/// `#82D5C8`) слишком звонкий для приложения, которое должно оставаться фоном
+/// для зикра, а не притягивать взгляд. Поэтому `primary` —
+/// [ThemePalette.accent] как есть.
 class AppTheme {
   const AppTheme._();
-
-  /// Фон карточек-групп: ровно настолько светлее чёрного, чтобы группа
-  /// читалась как отдельный блок и при этом не спорила со счётчиком.
-  static const Color surfaceCard = Color(0xFF0D0D0D);
-
-  /// Разделители внутри поверхностей. Края поверхностей ею больше не
-  /// обводятся: там [edgeGlow], потому что обводка делала всплывающее окно
-  /// плоским вырезом в экране, а не листом поверх него.
-  static const Color hairline = Color(0x1AFFFFFF);
 
   /// Скругление правого края панели настроек. Константа общая: по ней же
   /// строится свечение снаружи панели в `SettingsDrawer`, и разойдись они —
@@ -52,111 +48,163 @@ class AppTheme {
   /// затемнённый экран: панели настроек, диалогов, нижних листов.
   static const Color edgeGlow = Color(0x33FFFFFF);
 
-  static final ColorScheme _colorScheme =
-      ColorScheme.fromSeed(
-        seedColor: Colors.teal,
-        brightness: Brightness.dark,
-      ).copyWith(
-        primary: const Color(0xFF5E9B90),
-        surface: Colors.black,
-        surfaceContainerLowest: Colors.black,
-        surfaceContainerLow: surfaceCard,
-        surfaceContainer: const Color(0xFF121212),
-        surfaceContainerHigh: const Color(0xFF171717),
-        surfaceContainerHighest: const Color(0xFF1F1F1F),
-        onSurface: const Color(0xFFF2F2F2),
-        onSurfaceVariant: const Color(0xFFA0A0A0),
-        outline: const Color(0xFF3D3D3D),
-        outlineVariant: const Color(0xFF1F1F1F),
-      );
+  /// То же свечение для светлых тем. Белое на светлом экране не видно, и
+  /// край держит мягкая тень той же формы.
+  static const Color edgeShadow = Color(0x33000000);
 
-  static ThemeData get dark => ThemeData(
-    brightness: Brightness.dark,
-    colorScheme: _colorScheme,
-    scaffoldBackgroundColor: Colors.black,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
-      surfaceTintColor: Colors.black,
-    ),
-    iconTheme: const IconThemeData(size: 32, color: Colors.white),
+  static Color edgeGlowFor(Brightness brightness) =>
+      brightness == Brightness.dark ? edgeGlow : edgeShadow;
 
-    // Панель настроек чёрная, как и экран под ней, поэтому отделяет её не
-    // подложка и не обводка, а скруглённый край со свечением снаружи — его
-    // рисует сам `SettingsDrawer`, потому что `shape` клипится Material'ом.
-    // Затемнение усилено, чтобы белые цифры счётчика не просвечивали сквозь.
-    drawerTheme: const DrawerThemeData(
-      backgroundColor: Colors.black,
-      surfaceTintColor: Colors.transparent,
-      elevation: 0,
-      scrimColor: Color(0xCC000000),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(
-          right: Radius.circular(drawerCornerRadius),
+  static ThemeData of(ThemePalette palette) =>
+      _build(palette, _colorScheme(palette));
+
+  static bool _isDark(ThemePalette palette) =>
+      palette.brightness == Brightness.dark;
+
+  /// Фон темы под вуалью цвета текста заданной плотности. Плотности подобраны
+  /// так, что на чёрном выходят прежние нейтральные ступени: `0.05` —
+  /// `#0D0D0D`, `0.12` — `#1F1F1F`, `0.24` — `#3D3D3D`.
+  static Color _veil(ThemePalette palette, double alpha) => Color.alphaBlend(
+    (_isDark(palette) ? Colors.white : Colors.black).withValues(alpha: alpha),
+    palette.background,
+  );
+
+  static ColorScheme _colorScheme(ThemePalette palette) {
+    final isDark = _isDark(palette);
+
+    return ColorScheme.fromSeed(
+      seedColor: palette.accent,
+      brightness: palette.brightness,
+    ).copyWith(
+      primary: palette.accent,
+      // Сгенерированный `onPrimary` даёт с приглушённым акцентом контраст
+      // около 4:1 — ниже порога для текста на кнопке. Чёрный на светлых
+      // акцентах тёмных тем и белый на тёмных акцентах светлых дают больше
+      // 5:1 у любой темы.
+      onPrimary: isDark ? Colors.black : Colors.white,
+      // Кнопка «Сброс»: на тёмных темах прежний `redAccent`, на светлых он
+      // даёт меньше 3:1, и нужен красный темнее.
+      error: isDark ? Colors.redAccent : const Color(0xFFB3261E),
+      surface: palette.background,
+      surfaceContainerLowest: palette.background,
+      // Фон карточек и диалогов: ровно настолько отличается от экрана, чтобы
+      // читаться отдельным листом и не спорить со счётчиком.
+      surfaceContainerLow: _veil(palette, 0.05),
+      surfaceContainer: _veil(palette, 0.07),
+      surfaceContainerHigh: _veil(palette, 0.09),
+      surfaceContainerHighest: _veil(palette, 0.12),
+      onSurface: isDark ? const Color(0xFFF2F2F2) : const Color(0xFF1C1C1C),
+      onSurfaceVariant: isDark
+          ? const Color(0xFFA0A0A0)
+          : const Color(0xFF55554F),
+      outline: _veil(palette, 0.24),
+      outlineVariant: _veil(palette, 0.12),
+    );
+  }
+
+  static ThemeData _build(ThemePalette palette, ColorScheme colorScheme) {
+    final isDark = _isDark(palette);
+    final edge = edgeGlowFor(palette.brightness);
+
+    return ThemeData(
+      brightness: palette.brightness,
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.surface,
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: colorScheme.surface,
+      ),
+
+      // Иконки и цифры экрана счётчика — самого контрастного к фону цвета:
+      // на тёмных темах чисто белые, как были всегда.
+      iconTheme: IconThemeData(
+        size: 32,
+        color: isDark ? Colors.white : colorScheme.onSurface,
+      ),
+
+      // Панель настроек того же цвета, что и экран под ней, поэтому отделяет
+      // её не подложка и не обводка, а скруглённый край со свечением снаружи —
+      // его рисует сам `SettingsDrawer`, потому что `shape` клипится
+      // Material'ом. На тёмных темах затемнение усилено, чтобы белые цифры
+      // счётчика не просвечивали сквозь; на светлых тёмные цифры под ним и
+      // так гаснут, а плотная чернота превращала бы светлую тему в тёмную.
+      drawerTheme: DrawerThemeData(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrimColor: isDark ? const Color(0xCC000000) : const Color(0x66000000),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+            right: Radius.circular(drawerCornerRadius),
+          ),
         ),
       ),
-    ),
 
-    dividerTheme: const DividerThemeData(
-      color: hairline,
-      space: 1,
-      thickness: 1,
-    ),
-
-    // Диалог и нижний лист всплывают поверх затемнённого экрана, и обводка
-    // делала их плоскими вырезами в нём. Край держит то же свечение, что и
-    // панель настроек, — приподнятость вместо контура.
-    dialogTheme: DialogThemeData(
-      backgroundColor: surfaceCard,
-      surfaceTintColor: Colors.transparent,
-      contentTextStyle: TextStyle(color: _colorScheme.onSurface, fontSize: 16),
-      shape: const EdgeGlowBorder(borderRadius: dialogRadius),
-
-      // TextButton держит вокруг подписи собственные поля — 12 dp по бокам и
-      // 10 dp сверху и снизу (подпись высотой 20 растянута до минимальной
-      // высоты кнопки в 40). Ряд кнопок отодвинут от края ровно на столько
-      // меньше: иначе подписи стоят дальше от края, чем текст над ними, и
-      // правый край диалога выглядит просторнее левого.
-      actionsPadding: const EdgeInsets.fromLTRB(
-        popupPadding - 12,
-        0,
-        popupPadding - 12,
-        popupPadding - 10,
+      // Разделители внутри поверхностей. Края самих поверхностей ими не
+      // обводятся: обводка делала всплывающее окно плоским вырезом в экране,
+      // а не листом поверх него.
+      dividerTheme: DividerThemeData(
+        color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1),
+        space: 1,
+        thickness: 1,
       ),
-    ),
 
-    bottomSheetTheme: const BottomSheetThemeData(
-      backgroundColor: Colors.black,
-      surfaceTintColor: Colors.transparent,
-      shape: EdgeGlowBorder(borderRadius: sheetRadius),
-    ),
+      // Диалог и нижний лист всплывают поверх затемнённого экрана, и обводка
+      // делала их плоскими вырезами в нём. Край держит то же свечение, что и
+      // панель настроек, — приподнятость вместо контура.
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surfaceContainerLow,
+        surfaceTintColor: Colors.transparent,
+        contentTextStyle: TextStyle(color: colorScheme.onSurface, fontSize: 16),
+        shape: EdgeGlowBorder(borderRadius: dialogRadius, color: edge),
 
-    // Выбор времени напоминания живёт в собственной теме и `dialogTheme` не
-    // наследует: без этого он единственный всплывал бы без светящегося края.
-    timePickerTheme: const TimePickerThemeData(
-      shape: EdgeGlowBorder(borderRadius: dialogRadius),
-    ),
-
-    // Делений десять, и точки под ползунком превращались в рябь: шаг и так
-    // виден по подписи «Уровень N».
-    sliderTheme: SliderThemeData(
-      activeTickMarkColor: Colors.transparent,
-      inactiveTickMarkColor: Colors.transparent,
-      inactiveTrackColor: const Color(0xFF2A2A2A),
-      overlayColor: _colorScheme.primary.withValues(alpha: 0.12),
-    ),
-
-    switchTheme: SwitchThemeData(
-      thumbColor: WidgetStateProperty.resolveWith(
-        (Set<WidgetState> states) => states.contains(WidgetState.selected)
-            ? _colorScheme.primary
-            : const Color(0xFF6E6E6E),
+        // TextButton держит вокруг подписи собственные поля — 12 dp по бокам и
+        // 10 dp сверху и снизу (подпись высотой 20 растянута до минимальной
+        // высоты кнопки в 40). Ряд кнопок отодвинут от края ровно на столько
+        // меньше: иначе подписи стоят дальше от края, чем текст над ними, и
+        // правый край диалога выглядит просторнее левого.
+        actionsPadding: const EdgeInsets.fromLTRB(
+          popupPadding - 12,
+          0,
+          popupPadding - 12,
+          popupPadding - 10,
+        ),
       ),
-      trackColor: WidgetStateProperty.resolveWith(
-        (Set<WidgetState> states) => states.contains(WidgetState.selected)
-            ? _colorScheme.primary.withValues(alpha: 0.32)
-            : const Color(0xFF1A1A1A),
+
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: EdgeGlowBorder(borderRadius: sheetRadius, color: edge),
       ),
-      trackOutlineColor: const WidgetStatePropertyAll<Color>(Color(0xFF3D3D3D)),
-    ),
-  );
+
+      // Выбор времени напоминания живёт в собственной теме и `dialogTheme` не
+      // наследует: без этого он единственный всплывал бы без светящегося края.
+      timePickerTheme: TimePickerThemeData(
+        shape: EdgeGlowBorder(borderRadius: dialogRadius, color: edge),
+      ),
+
+      // Делений десять, и точки под ползунком превращались в рябь: шаг и так
+      // виден по подписи «Уровень N».
+      sliderTheme: SliderThemeData(
+        activeTickMarkColor: Colors.transparent,
+        inactiveTickMarkColor: Colors.transparent,
+        inactiveTrackColor: _veil(palette, 0.165),
+        overlayColor: colorScheme.primary.withValues(alpha: 0.12),
+      ),
+
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> states) => states.contains(WidgetState.selected)
+              ? colorScheme.primary
+              : _veil(palette, 0.43),
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (Set<WidgetState> states) => states.contains(WidgetState.selected)
+              ? colorScheme.primary.withValues(alpha: 0.32)
+              : _veil(palette, 0.10),
+        ),
+        trackOutlineColor: WidgetStatePropertyAll<Color>(colorScheme.outline),
+      ),
+    );
+  }
 }

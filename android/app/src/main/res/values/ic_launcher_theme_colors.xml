@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Сгенерировано tool/generate_theme_icons.sh. -->
+<resources>
+    <color name="ic_launcher_background_graphite">#22262A</color>
+    <color name="ic_launcher_background_midnight">#172338</color>
+    <color name="ic_launcher_background_emerald">#112A1D</color>
+    <color name="ic_launcher_background_pomegranate">#39191B</color>
+    <color name="ic_launcher_background_white">#F5F5F2</color>
+    <color name="ic_launcher_background_sand">#EFE5D4</color>
+    <color name="ic_launcher_background_sage">#DBE4D9</color>
+</resources>

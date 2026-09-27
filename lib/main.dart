@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'app_icon.dart';
 import 'app_theme.dart';
 import 'counter_cubit.dart';
 import 'counter_page.dart';
@@ -14,18 +16,24 @@ import 'locale_cubit.dart';
 import 'notification_cubit.dart';
 import 'notification_service.dart';
 import 'system_bars.dart';
+import 'theme_cubit.dart';
 import 'vibration_cubit.dart';
+import 'welcome_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await SystemBars.applyEdgeToEdge();
 
   final dir = await getApplicationDocumentsDirectory();
 
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: HydratedStorageDirectory(dir.path),
   );
+
+  // Тема нужна раньше приложения: по яркости её фона красятся значки
+  // системных панелей, и выставленные до первого кадра они не перекрашиваются
+  // у пользователя на глазах.
+  final themeCubit = ThemeCubit();
+  await SystemBars.applyEdgeToEdge(themeCubit.state.palette.brightness);
 
   // Сбой инициализации уведомлений не должен мешать запуску: без runApp
   // пользователь видит только чёрный экран.
@@ -35,7 +43,7 @@ Future<void> main() async {
     log('main: notification init failed: $e', name: 'main');
   }
 
-  runApp(const MainApp());
+  runApp(MainApp(themeCubit: themeCubit));
 }
 
 /// Планирует ежедневное напоминание на языке `localeCode` либо отменяет его,
@@ -63,7 +71,9 @@ Future<void> _syncReminder({
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  final ThemeCubit themeCubit;
+
+  const MainApp({super.key, required this.themeCubit});
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -79,6 +89,11 @@ class _MainAppState extends State<MainApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       InAppUpdateService.checkForUpdate();
     });
+
+    // Значок сверяется с темой и при запуске: прошлая смена могла не дойти
+    // до системы — например, если приложение закрыли, не свернув.
+    final themeState = widget.themeCubit.state;
+    if (themeState.isChosen) AppIcon.match(themeState.palette);
   }
 
   @override
@@ -89,6 +104,7 @@ class _MainAppState extends State<MainApp> {
         BlocProvider(create: (context) => LocaleCubit()),
         BlocProvider(create: (context) => VibrationCubit()),
         BlocProvider(create: (context) => NotificationCubit()),
+        BlocProvider.value(value: widget.themeCubit),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -106,19 +122,49 @@ class _MainAppState extends State<MainApp> {
               notification: context.read<NotificationCubit>().state,
             ),
           ),
+          BlocListener<ThemeCubit, ThemeState>(
+            listenWhen: (previous, current) =>
+                previous.palette.brightness != current.palette.brightness,
+            listener: (context, themeState) =>
+                SystemBars.matchBackground(themeState.palette.brightness),
+          ),
         ],
         child: BlocBuilder<LocaleCubit, String>(
           builder: (context, localeCode) {
-            return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Tasbeh',
-              navigatorKey: navigatorKey,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: Locale(localeCode),
-              darkTheme: AppTheme.dark,
-              themeMode: ThemeMode.dark,
-              home: const CounterPage(),
+            return BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, themeState) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Tasbeh',
+                  navigatorKey: navigatorKey,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: Locale(localeCode),
+                  theme: AppTheme.of(themeState.palette),
+                  builder: (context, child) =>
+                      AnnotatedRegion<SystemUiOverlayStyle>(
+                        value: SystemBars.overlayStyleFor(
+                          themeState.palette.brightness,
+                        ),
+                        child: child!,
+                      ),
+                  // Экран выбора темы не маршрут, а подмена главного
+                  // экрана: после «Начать» назад к нему вернуться нельзя, и
+                  // стеку навигации нечего было бы помнить.
+                  //
+                  // Ключи обязательны: переход по умолчанию ключует обёртку
+                  // по `child.key`, и у двух экранов без ключей обёртки
+                  // совпадали — уходящий экран пропадал сразу, и между
+                  // экранами мелькал чёрный кадр.
+                  home: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: themeState.isChosen
+                        ? const CounterPage(key: ValueKey(CounterPage))
+                        : const WelcomePage(key: ValueKey(WelcomePage)),
+                  ),
+                );
+              },
             );
           },
         ),

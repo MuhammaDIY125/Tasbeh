@@ -127,6 +127,78 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @chooseThemeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a theme'**
+  String get chooseThemeTitle;
+
+  /// No description provided for @chooseThemeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can always change it in settings'**
+  String get chooseThemeHint;
+
+  /// No description provided for @start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// No description provided for @themeBlack.
+  ///
+  /// In en, this message translates to:
+  /// **'Black'**
+  String get themeBlack;
+
+  /// No description provided for @themeGraphite.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphite'**
+  String get themeGraphite;
+
+  /// No description provided for @themeMidnight.
+  ///
+  /// In en, this message translates to:
+  /// **'Midnight'**
+  String get themeMidnight;
+
+  /// No description provided for @themeEmerald.
+  ///
+  /// In en, this message translates to:
+  /// **'Emerald'**
+  String get themeEmerald;
+
+  /// No description provided for @themePomegranate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pomegranate'**
+  String get themePomegranate;
+
+  /// No description provided for @themeWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get themeWhite;
+
+  /// No description provided for @themeSand.
+  ///
+  /// In en, this message translates to:
+  /// **'Sand'**
+  String get themeSand;
+
+  /// No description provided for @themeSage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sage'**
+  String get themeSage;
+
   /// No description provided for @shareApp.
   ///
   /// In en, this message translates to:

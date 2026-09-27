@@ -4,12 +4,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
 
+import 'app_icon.dart';
 import 'app_theme.dart';
 import 'edge_glow.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
 import 'notification_cubit.dart';
 import 'notification_service.dart';
+import 'palette_picker.dart';
+import 'theme_cubit.dart';
 import 'vibration_cubit.dart';
 
 /// Настройки в виде выезжающей слева панели.
@@ -34,6 +37,7 @@ class SettingsDrawer extends StatelessWidget {
       borderRadius: const BorderRadius.horizontal(
         right: Radius.circular(AppTheme.drawerCornerRadius),
       ),
+      color: AppTheme.edgeGlowFor(theme.brightness),
       child: Drawer(
         // Стандартные 304 dp оставляют полосу поверх счётчика; панель почти во
         // всю ширину читается как отдельный экран. Верхний предел нужен
@@ -59,6 +63,7 @@ class SettingsDrawer extends StatelessWidget {
                       ),
                     ),
                     const _LanguageSection(),
+                    const _ThemeSection(),
                     const _VibrationSection(),
                     const _ReminderSection(),
                     const Divider(),
@@ -195,6 +200,59 @@ class _LanguageSection extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+/// Выбор темы.
+class _ThemeSection extends StatelessWidget {
+  const _ThemeSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      buildWhen: (previous, current) => previous.palette != current.palette,
+      builder: (context, themeState) {
+        return ListTile(
+          title: Text(t.theme),
+          // Вместо названия — сама тема в миниатюре, как в сетке выбора.
+          trailing: PaletteSwatch(palette: themeState.palette, size: 24),
+          onTap: () => _showThemePicker(context),
+        );
+      },
+    );
+  }
+
+  /// Лист не закрывается по выбору, в отличие от выбора языка: тема
+  /// применяется сразу, и, чтобы сравнить несколько, их перебирают подряд.
+  /// Поэтому и значок приложения меняется только с закрытием листа — когда
+  /// выбор окончен.
+  Future<void> _showThemePicker(BuildContext context) async {
+    final themeCubit = context.read<ThemeCubit>();
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppTheme.popupPadding,
+              0,
+              AppTheme.popupPadding,
+              AppTheme.popupPadding,
+            ),
+            // Лист берёт ширину у содержимого, и без растяжки сжался бы до
+            // сетки кружков — уже, чем лист выбора языка из того же меню.
+            // `Center` растягивается по ширине, а по высоте — только по сетке.
+            child: const Center(heightFactor: 1, child: PalettePicker()),
+          ),
+        );
+      },
+    );
+
+    await AppIcon.match(themeCubit.state.palette);
   }
 }
 

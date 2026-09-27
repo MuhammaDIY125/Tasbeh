@@ -12,10 +12,11 @@ import 'vibration_cubit.dart';
 class CounterPage extends StatefulWidget {
   const CounterPage({super.key});
 
+  /// Цвет не задан: цифры берут его у иконок вокруг — `iconTheme` темы, —
+  /// чтобы на светлых темах стать тёмными вместе с ними.
   static const numberStyle = TextStyle(
     fontSize: 48,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
   );
 
   static const padding = 8.0;
@@ -103,7 +104,9 @@ class _CounterPageState extends State<CounterPage> {
                     return Text(
                       '$counter',
                       textAlign: TextAlign.center,
-                      style: CounterPage.numberStyle,
+                      style: CounterPage.numberStyle.copyWith(
+                        color: Theme.of(context).iconTheme.color,
+                      ),
                     );
                   },
                 ),
@@ -139,7 +142,7 @@ class _CounterPageState extends State<CounterPage> {
               },
               child: Text(
                 t.reset,
-                style: const TextStyle(color: Colors.redAccent),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
           ],
