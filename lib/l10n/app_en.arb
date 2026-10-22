@@ -28,5 +28,11 @@
   "notificationChannelName": "Daily reminder",
   "notificationChannelDescription": "Tasbeh reminder at the time you chose",
   "updateReady": "Update downloaded",
-  "updateRestart": "Restart"
+  "updateRestart": "Restart",
+  "customText": "Text",
+  "customTextHint": "Dhikr, dua or any text",
+  "editText": "Edit text",
+  "done": "Done",
+  "setCount": "Set count",
+  "save": "Save"
 }

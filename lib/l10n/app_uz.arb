@@ -28,5 +28,11 @@
   "notificationChannelName": "Kunlik eslatma",
   "notificationChannelDescription": "Har kuni belgilangan vaqtda tasbeh haqida eslatma",
   "updateReady": "Yangilanish yuklab olindi",
-  "updateRestart": "Qayta ishga tushirish"
+  "updateRestart": "Qayta ishga tushirish",
+  "customText": "Matn",
+  "customTextHint": "Zikr, duo yoki istalgan matn",
+  "editText": "Matnni tahrirlash",
+  "done": "Tayyor",
+  "setCount": "Sonni o‘zgartirish",
+  "save": "Saqlash"
 }

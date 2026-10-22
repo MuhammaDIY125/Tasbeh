@@ -94,4 +94,22 @@ class AppLocalizationsUz extends AppLocalizations {
 
   @override
   String get updateRestart => 'Qayta ishga tushirish';
+
+  @override
+  String get customText => 'Matn';
+
+  @override
+  String get customTextHint => 'Zikr, duo yoki istalgan matn';
+
+  @override
+  String get editText => 'Matnni tahrirlash';
+
+  @override
+  String get done => 'Tayyor';
+
+  @override
+  String get setCount => 'Sonni o‘zgartirish';
+
+  @override
+  String get save => 'Saqlash';
 }

@@ -94,4 +94,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get updateRestart => 'Перезапустить';
+
+  @override
+  String get customText => 'Текст';
+
+  @override
+  String get customTextHint => 'Зикр, дуа или любой текст';
+
+  @override
+  String get editText => 'Изменить текст';
+
+  @override
+  String get done => 'Готово';
+
+  @override
+  String get setCount => 'Изменить число';
+
+  @override
+  String get save => 'Сохранить';
 }

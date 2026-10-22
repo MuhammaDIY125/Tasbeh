@@ -45,3 +45,10 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   generate: true
+
+  # Арабский шрифт для своего текста: системные шрифты Android рисуют
+  # огласовки (харакаты) мелко и наползающими на буквы.
+  fonts:
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf

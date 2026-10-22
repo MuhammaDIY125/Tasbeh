@@ -17,6 +17,14 @@ class CounterCubit extends HydratedCubit<int> {
     }
   }
 
+  /// Ставит счётчик на заданное число — например, чтобы продолжить счёт,
+  /// начатый на других чётках.
+  void setValue(int value) {
+    if (value >= 0 && value != state) {
+      emit(value);
+    }
+  }
+
   void reset() {
     if (state != 0) {
       emit(0);

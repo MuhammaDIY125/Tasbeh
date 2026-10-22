@@ -10,6 +10,7 @@ import 'app_icon.dart';
 import 'app_theme.dart';
 import 'counter_cubit.dart';
 import 'counter_page.dart';
+import 'custom_text_cubit.dart';
 import 'in_app_update_service.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
@@ -101,6 +102,7 @@ class _MainAppState extends State<MainApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => CounterCubit()),
+        BlocProvider(create: (context) => CustomTextCubit()),
         BlocProvider(create: (context) => LocaleCubit()),
         BlocProvider(create: (context) => VibrationCubit()),
         BlocProvider(create: (context) => NotificationCubit()),

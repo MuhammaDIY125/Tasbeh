@@ -270,6 +270,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restart'**
   String get updateRestart;
+
+  /// No description provided for @customText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get customText;
+
+  /// No description provided for @customTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dhikr, dua or any text'**
+  String get customTextHint;
+
+  /// No description provided for @editText.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit text'**
+  String get editText;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @setCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Set count'**
+  String get setCount;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

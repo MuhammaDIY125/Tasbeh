@@ -4,6 +4,8 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'app_theme.dart';
 import 'counter_cubit.dart';
+import 'counter_value_dialog.dart';
+import 'custom_text_sheet.dart';
 import 'l10n/app_localizations.dart';
 import 'settings_drawer.dart';
 import 'system_bars.dart';
@@ -70,16 +72,28 @@ class _CounterPageState extends State<CounterPage> {
           ),
           child: Stack(
             children: [
+              // Кнопки держатся верхних углов: счёт идёт касаниями по всему
+              // экрану, и большой палец чаще попадает в нижнюю половину —
+              // кнопка там перехватывала бы касания счёта.
               Positioned(
                 left: CounterPage.padding,
                 top: CounterPage.padding,
-                // `Builder` даёт контекст ниже `Scaffold` — только из него
-                // виден `ScaffoldState` с панелью настроек.
-                child: Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    icon: const Icon(Icons.menu_rounded),
-                  ),
+                child: Column(
+                  children: [
+                    // `Builder` даёт контекст ниже `Scaffold` — только из него
+                    // виден `ScaffoldState` с панелью настроек.
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        icon: const Icon(Icons.menu_rounded),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: t.customText,
+                      onPressed: () => showCustomTextSheet(context),
+                      icon: const Icon(Icons.menu_book_rounded),
+                    ),
+                  ],
                 ),
               ),
               Positioned(
@@ -95,17 +109,27 @@ class _CounterPageState extends State<CounterPage> {
                       onPressed: counterCubit.decrement,
                       icon: const Icon(Icons.remove_circle_outline),
                     ),
+                    IconButton(
+                      tooltip: t.setCount,
+                      onPressed: () => showCounterValueDialog(context),
+                      icon: const Icon(Icons.edit_outlined),
+                    ),
                   ],
                 ),
               ),
               Center(
                 child: BlocBuilder<CounterCubit, int>(
+                  // Долгое нажатие на число — короткий путь к его правке:
+                  // короткие касания по-прежнему уходят в счёт.
                   builder: (context, counter) {
-                    return Text(
-                      '$counter',
-                      textAlign: TextAlign.center,
-                      style: CounterPage.numberStyle.copyWith(
-                        color: Theme.of(context).iconTheme.color,
+                    return GestureDetector(
+                      onLongPress: () => showCounterValueDialog(context),
+                      child: Text(
+                        '$counter',
+                        textAlign: TextAlign.center,
+                        style: CounterPage.numberStyle.copyWith(
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                       ),
                     );
                   },

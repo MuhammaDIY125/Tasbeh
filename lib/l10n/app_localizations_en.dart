@@ -94,4 +94,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateRestart => 'Restart';
+
+  @override
+  String get customText => 'Text';
+
+  @override
+  String get customTextHint => 'Dhikr, dua or any text';
+
+  @override
+  String get editText => 'Edit text';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get setCount => 'Set count';
+
+  @override
+  String get save => 'Save';
 }

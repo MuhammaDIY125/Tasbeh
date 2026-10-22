@@ -28,5 +28,11 @@
   "notificationChannelName": "Ежедневное напоминание",
   "notificationChannelDescription": "Напоминание о тасбехе в выбранное время",
   "updateReady": "Обновление загружено",
-  "updateRestart": "Перезапустить"
+  "updateRestart": "Перезапустить",
+  "customText": "Текст",
+  "customTextHint": "Зикр, дуа или любой текст",
+  "editText": "Изменить текст",
+  "done": "Готово",
+  "setCount": "Изменить число",
+  "save": "Сохранить"
 }
