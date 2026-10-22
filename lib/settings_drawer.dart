@@ -67,7 +67,6 @@ class SettingsDrawer extends StatelessWidget {
                       ),
                     ),
                     const _CounterValueSection(),
-                    const _CustomTextSection(),
                     const _LanguageSection(),
                     const _ThemeSection(),
                     const _VibrationSection(),
@@ -156,39 +155,6 @@ class _CounterValueSection extends StatelessWidget {
         trailing: _ValueLabel('$counter'),
         onTap: () => showCounterValueDialog(context),
       ),
-    );
-  }
-}
-
-/// Свой текст: под названием — его первая строка, чтобы было видно, какой
-/// текст сейчас стоит, не открывая его.
-class _CustomTextSection extends StatelessWidget {
-  const _CustomTextSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context)!;
-
-    return BlocBuilder<CustomTextCubit, String>(
-      builder: (context, text) {
-        final firstLine = text.trim().split('\n').first.trim();
-
-        return ListTile(
-          title: Text(t.customText),
-          subtitle: firstLine.isEmpty
-              ? null
-              : Text(
-                  firstLine,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontFamilyFallback: const [arabicFontFamily],
-                  ),
-                ),
-          onTap: () => showCustomTextSheet(context, edit: true),
-        );
-      },
     );
   }
 }
