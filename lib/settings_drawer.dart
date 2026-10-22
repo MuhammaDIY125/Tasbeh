@@ -110,7 +110,7 @@ class _AppVersion extends StatelessWidget {
           // Пока версия не пришла, место под неё держит пустой текст: иначе
           // список настроек дёргался бы вниз в первый кадр после открытия.
           return Text(
-            version == null ? '' : 'v$version',
+            version == null ? '' : 'v$version (special)',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
