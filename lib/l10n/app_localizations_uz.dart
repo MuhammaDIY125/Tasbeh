@@ -102,14 +102,11 @@ class AppLocalizationsUz extends AppLocalizations {
   String get customTextHint => 'Zikr, duo yoki istalgan matn';
 
   @override
-  String get editText => 'Matnni tahrirlash';
-
-  @override
   String get done => 'Tayyor';
 
   @override
-  String get setCount => 'Sonni o‘zgartirish';
+  String get save => 'Saqlash';
 
   @override
-  String get save => 'Saqlash';
+  String get counterValue => 'Son';
 }

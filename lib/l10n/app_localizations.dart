@@ -283,29 +283,23 @@ abstract class AppLocalizations {
   /// **'Dhikr, dua or any text'**
   String get customTextHint;
 
-  /// No description provided for @editText.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit text'**
-  String get editText;
-
   /// No description provided for @done.
   ///
   /// In en, this message translates to:
   /// **'Done'**
   String get done;
 
-  /// No description provided for @setCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Set count'**
-  String get setCount;
-
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get save;
+
+  /// No description provided for @counterValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Count'**
+  String get counterValue;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

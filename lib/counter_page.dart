@@ -109,21 +109,19 @@ class _CounterPageState extends State<CounterPage> {
                       onPressed: counterCubit.decrement,
                       icon: const Icon(Icons.remove_circle_outline),
                     ),
-                    IconButton(
-                      tooltip: t.setCount,
-                      onPressed: () => showCounterValueDialog(context),
-                      icon: const Icon(Icons.edit_outlined),
-                    ),
                   ],
                 ),
               ),
               Center(
                 child: BlocBuilder<CounterCubit, int>(
-                  // Долгое нажатие на число — короткий путь к его правке:
-                  // короткие касания по-прежнему уходят в счёт.
+                  // Долгое нажатие на число — короткий путь к его правке, в
+                  // обход настроек: короткие касания по-прежнему уходят в счёт.
                   builder: (context, counter) {
                     return GestureDetector(
-                      onLongPress: () => showCounterValueDialog(context),
+                      onLongPress: () {
+                        Feedback.forLongPress(context);
+                        showCounterValueDialog(context);
+                      },
                       child: Text(
                         '$counter',
                         textAlign: TextAlign.center,

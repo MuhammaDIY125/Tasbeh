@@ -9,23 +9,25 @@ import 'l10n/app_localizations.dart';
 /// Открывает свой текст пользователя в нижнем листе.
 ///
 /// Лист, а не отдельный экран: текст читают между касаниями счётчика, и
-/// счётчик должен оставаться под ним на месте. Пустой текст сразу открывается
-/// на правку — читать там нечего.
-Future<void> showCustomTextSheet(BuildContext context) =>
+/// счётчик должен оставаться под ним на месте. С главного экрана лист
+/// открывается на чтение, из настроек — сразу на правку ([edit]). Пустой текст
+/// открывается на правку всегда: читать там нечего.
+Future<void> showCustomTextSheet(BuildContext context, {bool edit = false}) =>
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (_) => _CustomTextSheet(
-        startEditing: context.read<CustomTextCubit>().state.trim().isEmpty,
+        startEditing:
+            edit || context.read<CustomTextCubit>().state.trim().isEmpty,
       ),
     );
 
 /// Арабский шрифт приложения. Остальным строкам он подключён запасным: так
 /// одиночное арабское слово внутри русской строки тоже рисуется им, а не
 /// системным шрифтом с наползающими огласовками.
-const String _arabicFontFamily = 'Amiri';
+const String arabicFontFamily = 'Amiri';
 
 class _CustomTextSheet extends StatefulWidget {
   final bool startEditing;
@@ -38,6 +40,21 @@ class _CustomTextSheet extends StatefulWidget {
 
 class _CustomTextSheetState extends State<_CustomTextSheet> {
   late bool _isEditing = widget.startEditing;
+
+  void _startEditing() {
+    Feedback.forLongPress(context);
+    setState(() => _isEditing = true);
+  }
+
+  /// Стёртый целиком текст читать нечего, и лист вместо пустого режима
+  /// чтения закрывается.
+  void _finishEditing() {
+    if (context.read<CustomTextCubit>().state.trim().isEmpty) {
+      Navigator.pop(context);
+      return;
+    }
+    setState(() => _isEditing = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,33 +71,33 @@ class _CustomTextSheetState extends State<_CustomTextSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-              alignment: AlignmentDirectional.centerEnd,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: 12),
-                child: _isEditing
-                    ? IconButton(
-                        tooltip: t.done,
-                        onPressed: () => setState(() => _isEditing = false),
-                        icon: Icon(
-                          Icons.check_rounded,
-                          size: 24,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      )
-                    : IconButton(
-                        tooltip: t.editText,
-                        onPressed: () => setState(() => _isEditing = true),
-                        icon: const Icon(Icons.edit_outlined, size: 24),
-                      ),
+            // В режиме чтения кнопок нет: правка открывается долгим нажатием
+            // на текст или из настроек, и лист остаётся одним текстом.
+            if (_isEditing)
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 12),
+                  child: IconButton(
+                    tooltip: t.done,
+                    onPressed: _finishEditing,
+                    icon: Icon(
+                      Icons.check_rounded,
+                      size: 24,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
               ),
-            ),
             Flexible(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 child: _isEditing
                     ? const _CustomTextEditor(key: ValueKey(true))
-                    : const _CustomTextView(key: ValueKey(false)),
+                    : _CustomTextView(
+                        key: const ValueKey(false),
+                        onLongPress: _startEditing,
+                      ),
               ),
             ),
           ],
@@ -96,25 +113,31 @@ class _CustomTextSheetState extends State<_CustomTextSheet> {
 /// строки крупнее и с большим интервалом: огласовки стоят над и под буквами, и
 /// при обычном интервале строки наезжали бы друг на друга.
 class _CustomTextView extends StatelessWidget {
-  const _CustomTextView({super.key});
+  final VoidCallback onLongPress;
+
+  const _CustomTextView({super.key, required this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
     final text = context.watch<CustomTextCubit>().state.trim();
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(
-        AppTheme.popupPadding,
-        0,
-        AppTheme.popupPadding,
-        AppTheme.popupPadding,
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            for (final line in text.split('\n')) _CustomTextLine(line.trim()),
-          ],
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: onLongPress,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppTheme.popupPadding,
+          0,
+          AppTheme.popupPadding,
+          AppTheme.popupPadding,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            children: [
+              for (final line in text.split('\n')) _CustomTextLine(line.trim()),
+            ],
+          ),
         ),
       ),
     );
@@ -141,7 +164,7 @@ class _CustomTextLine extends StatelessWidget {
       textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
       style: isArabic
           ? TextStyle(
-              fontFamily: _arabicFontFamily,
+              fontFamily: arabicFontFamily,
               fontSize: 30,
               height: 1.9,
               color: color,
@@ -150,7 +173,7 @@ class _CustomTextLine extends StatelessWidget {
               fontSize: 18,
               height: 1.5,
               color: color,
-              fontFamilyFallback: const [_arabicFontFamily],
+              fontFamilyFallback: const [arabicFontFamily],
             ),
     );
   }
@@ -201,7 +224,7 @@ class _CustomTextEditorState extends State<_CustomTextEditor> {
           fontSize: 18,
           height: 1.6,
           color: colorScheme.onSurface,
-          fontFamilyFallback: const [_arabicFontFamily],
+          fontFamilyFallback: const [arabicFontFamily],
         ),
         decoration: InputDecoration(
           hintText: t.customTextHint,

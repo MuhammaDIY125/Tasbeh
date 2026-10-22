@@ -31,8 +31,7 @@
   "updateRestart": "Перезапустить",
   "customText": "Текст",
   "customTextHint": "Зикр, дуа или любой текст",
-  "editText": "Изменить текст",
   "done": "Готово",
-  "setCount": "Изменить число",
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "counterValue": "Счёт"
 }

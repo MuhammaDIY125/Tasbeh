@@ -102,14 +102,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customTextHint => 'Dhikr, dua or any text';
 
   @override
-  String get editText => 'Edit text';
-
-  @override
   String get done => 'Done';
 
   @override
-  String get setCount => 'Set count';
+  String get save => 'Save';
 
   @override
-  String get save => 'Save';
+  String get counterValue => 'Count';
 }

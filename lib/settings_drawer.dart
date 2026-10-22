@@ -6,6 +6,10 @@ import 'package:vibration/vibration.dart';
 
 import 'app_icon.dart';
 import 'app_theme.dart';
+import 'counter_cubit.dart';
+import 'counter_value_dialog.dart';
+import 'custom_text_cubit.dart';
+import 'custom_text_sheet.dart';
 import 'edge_glow.dart';
 import 'l10n/app_localizations.dart';
 import 'locale_cubit.dart';
@@ -62,6 +66,8 @@ class SettingsDrawer extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const _CounterValueSection(),
+                    const _CustomTextSection(),
                     const _LanguageSection(),
                     const _ThemeSection(),
                     const _VibrationSection(),
@@ -134,6 +140,57 @@ class _ValueLabel extends StatelessWidget {
       fontSize: 16,
     ),
   );
+}
+
+/// Текущее число счётчика и его правка.
+class _CounterValueSection extends StatelessWidget {
+  const _CounterValueSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return BlocBuilder<CounterCubit, int>(
+      builder: (context, counter) => ListTile(
+        title: Text(t.counterValue),
+        trailing: _ValueLabel('$counter'),
+        onTap: () => showCounterValueDialog(context),
+      ),
+    );
+  }
+}
+
+/// Свой текст: под названием — его первая строка, чтобы было видно, какой
+/// текст сейчас стоит, не открывая его.
+class _CustomTextSection extends StatelessWidget {
+  const _CustomTextSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
+    return BlocBuilder<CustomTextCubit, String>(
+      builder: (context, text) {
+        final firstLine = text.trim().split('\n').first.trim();
+
+        return ListTile(
+          title: Text(t.customText),
+          subtitle: firstLine.isEmpty
+              ? null
+              : Text(
+                  firstLine,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontFamilyFallback: const [arabicFontFamily],
+                  ),
+                ),
+          onTap: () => showCustomTextSheet(context, edit: true),
+        );
+      },
+    );
+  }
 }
 
 /// Выбор языка интерфейса.

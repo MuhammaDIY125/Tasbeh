@@ -31,8 +31,7 @@
   "updateRestart": "Qayta ishga tushirish",
   "customText": "Matn",
   "customTextHint": "Zikr, duo yoki istalgan matn",
-  "editText": "Matnni tahrirlash",
   "done": "Tayyor",
-  "setCount": "Sonni o‘zgartirish",
-  "save": "Saqlash"
+  "save": "Saqlash",
+  "counterValue": "Son"
 }

@@ -102,14 +102,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get customTextHint => 'Зикр, дуа или любой текст';
 
   @override
-  String get editText => 'Изменить текст';
-
-  @override
   String get done => 'Готово';
 
   @override
-  String get setCount => 'Изменить число';
+  String get save => 'Сохранить';
 
   @override
-  String get save => 'Сохранить';
+  String get counterValue => 'Счёт';
 }
